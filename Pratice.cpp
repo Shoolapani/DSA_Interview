@@ -1,6 +1,33 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct Node
+{
+    int data;
+    struct Node *next;
+    struct Node *bottom;
+
+    Node(int x)
+    {
+        data = x;
+        next = NULL;
+        bottom = NULL;
+    }
+};
+
+struct Item
+{
+    int value;
+    int weight;
+};
+
+struct Job
+{
+    int id;     // Job Id
+    int dead;   // Deadline of job
+    int profit; // Profit if job is over before or on deadline
+};
+
 void setZeroes(vector<vector<int>> &matrix)
 {
     for (size_t i = 0; i < matrix.size(); i++)
@@ -1574,24 +1601,1510 @@ ListNode *removeNthFromEnd2(ListNode *head, int n)
     return newNode->next;
 }
 
+int countHillValley(vector<int> &nums)
+{
+    int count = 0;
+
+    for (int i = 1; i < nums.size() - 1; i++)
+    {
+        if ((nums[i] != nums[i - 1]) && (nums[i] != nums[i + 1]))
+        {
+            if ((nums[i] < nums[i - 1]) && (nums[i] < nums[i + 1]))
+            {
+                ++count;
+            }
+            else if ((nums[i] > nums[i - 1]) && (nums[i] > nums[i + 1]))
+            {
+                ++count;
+            }
+        }
+        else
+        {
+            int j = i - 1, k = i + 1;
+            while ((nums[j] == nums[j + 1]))
+            {
+                --j;
+                if (j < 0)
+                {
+                    break;
+                }
+            }
+            while ((nums[k] == nums[k - 1]) && (k < nums.size()))
+            {
+                ++k;
+                if (k >= nums.size())
+                {
+                    break;
+                }
+            }
+
+            if ((j < 0))
+            {
+                continue;
+            }
+            if (k >= nums.size())
+            {
+                continue;
+            }
+
+            if ((nums[i] < nums[j]) && (nums[i] < nums[k]))
+            {
+                ++count;
+            }
+            else if ((nums[i] > nums[j]) && (nums[i] > nums[k]))
+            {
+                ++count;
+            }
+            i = k - 1;
+        }
+    }
+
+    return count;
+}
+
+void deleteNode(ListNode *node)
+{
+    node->val = node->next->val;
+    node->next = node->next->next;
+}
+
 ListNode *addTwoNumbers(ListNode *l1, ListNode *l2)
 {
-    
+    string s1 = "", s2 = "";
+    ListNode *d1 = l1, *d2 = l2;
+    int n1 = 0, n2 = 0, sum = 0, dn = 0;
+    ListNode *newNode = new ListNode(), *head = newNode;
+    while (d1)
+    {
+        s1 += to_string(d1->val);
+        d1 = d1->next;
+    }
+    while (d2)
+    {
+        s2 += to_string(d2->val);
+        d2 = d2->next;
+    }
+    reverse(s1.begin(), s1.end());
+    reverse(s2.begin(), s2.end());
+    n1 = stoi(s1);
+    n2 = stoi(s2);
+    sum = n1 + n2;
+
+    if (sum == 0)
+    {
+        newNode->next = new ListNode();
+    }
+    while (sum > 0)
+    {
+        dn = sum % 10;
+        sum = sum / 10;
+        newNode->next = new ListNode(dn);
+        newNode = newNode->next;
+    }
+
+    return head->next;
+}
+
+ListNode *addTwoNumbers2(ListNode *l1, ListNode *l2)
+{
+    ListNode *d1 = l1, *d2 = l2;
+    int n1 = 0, n2 = 0, sum = 0, dn = 0;
+    ListNode *newNode = new ListNode(), *head = newNode;
+
+    while (d1)
+    {
+        n1 += (d1->val * (pow(10, dn)));
+        d1 = d1->next;
+        ++dn;
+    }
+    dn = 0;
+    while (d2)
+    {
+        n2 += (d2->val * (pow(10, dn++)));
+        d2 = d2->next;
+    }
+
+    sum = n1 + n2;
+
+    if (sum == 0)
+    {
+        newNode->next = new ListNode();
+    }
+    while (sum > 0)
+    {
+        dn = sum % 10;
+        sum = sum / 10;
+        newNode->next = new ListNode(dn);
+        newNode = newNode->next;
+    }
+    return head->next;
+}
+
+ListNode *addTwoNumbers21(ListNode *l1, ListNode *l2)
+{
+    int sum = 0, carry = 0;
+    ListNode *newNode = new ListNode(), *head = newNode;
+
+    while ((l1 != nullptr) || (l2 != nullptr) || (carry))
+    {
+        sum = 0;
+        if (l1)
+        {
+            sum += l1->val;
+            l1 = l1->next;
+        }
+        if (l2)
+        {
+            sum += l2->val;
+            l2 = l2->next;
+        }
+        sum += carry;
+        carry = sum / 10;
+        newNode->next = new ListNode(sum % 10);
+        newNode = newNode->next;
+    }
+
+    return head->next;
+}
+
+bool hasCycle(ListNode *head)
+{
+    ListNode *slow = head, *fast = head;
+    if (head == nullptr)
+    {
+        return 0;
+    }
+
+    if (head->next != nullptr)
+    {
+        while ((fast) && (fast->next))
+        {
+            slow = slow->next;
+            fast = fast->next->next;
+            if (slow == fast)
+            {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+bool hasCycle2(ListNode *head)
+{
+    unordered_set<ListNode *> nodeSet;
+    while ((nodeSet.find(head) == nodeSet.end()) && (head))
+    {
+        nodeSet.insert(head);
+        head = head->next;
+    }
+
+    if (head == nullptr)
+    {
+        return false;
+    }
+    return true;
+}
+
+ListNode *getIntersectionNode(ListNode *headA, ListNode *headB)
+{
+    unordered_set<ListNode *> nodeSet;
+    while (headA)
+    {
+        nodeSet.insert(headA);
+        headA = headA->next;
+    }
+
+    while ((nodeSet.find(headB) == nodeSet.end()) && (headB))
+    {
+        headB = headB->next;
+    }
+    if (headB == nullptr)
+    {
+        return nullptr;
+    }
+    return headB;
+}
+
+ListNode *getIntersectionNode2(ListNode *headA, ListNode *headB)
+{
+    ListNode *h1 = headA, *h2 = headB;
+
+    while ((h1) || (h2))
+    {
+        if ((h1 == h2) && (h1 != nullptr) && (h2 != nullptr))
+        {
+            return h1;
+        }
+
+        if (h1 == nullptr)
+        {
+            h1 = headB;
+            continue;
+        }
+        if (h2 == nullptr)
+        {
+            h2 = headA;
+            continue;
+        }
+        h1 = h1->next;
+        h2 = h2->next;
+    }
+
+    return nullptr;
+}
+
+ListNode *getIntersectionNode3(ListNode *headA, ListNode *headB)
+{
+    ListNode *h1 = headA, *h2 = headB;
+    if (h1 == NULL || h2 == NULL)
+    {
+        return NULL;
+    }
+
+    while (h1 != h2)
+    {
+        h1 = (h1 == NULL) ? (headB) : (headA->next);
+        h2 = (h2 == NULL) ? (headA) : (headB->next);
+    }
+    return h1;
+}
+
+bool isPalindrome(ListNode *head)
+{
+    ListNode *s = head, *f = head, *d = s, *prev = nullptr;
+    int count = 1;
+    while ((f) && (f->next))
+    {
+        ++count;
+        d = s;
+        s = s->next;
+        f = f->next->next;
+    }
+
+    // for single node
+    if (count)
+    {
+        return true;
+    }
+
+    // Even ke liye
+    if (f == nullptr)
+    {
+        d->next = nullptr;
+    }
+
+    // For odd no of node
+    else if (f->next == nullptr)
+    {
+        d->next = nullptr;
+        d = s;
+        s = s->next;
+    }
+
+    f = s->next;
+    while (f)
+    {
+        s->next = prev;
+        prev = s;
+        s = f;
+        f = f->next;
+    }
+    s->next = prev;
+    prev = head;
+
+    while (s && prev)
+    {
+        if (s->val != prev->val)
+        {
+            return false;
+        }
+        s = s->next;
+        prev = prev->next;
+    }
+
+    return true;
+}
+
+void printList(Node *Node)
+{
+    while (Node != NULL)
+    {
+        printf("%d ", Node->data);
+        Node = Node->bottom;
+    }
+}
+
+// } Driver Code Ends
+
+/* Node structure  used in the program
+
+struct Node{
+    int data;
+    struct Node * next;
+    struct Node * bottom;
+
+    Node(int x){
+        data = x;
+        next = NULL;
+        bottom = NULL;
+    }
+
+};
+*/
+
+/*  Function which returns the  root of
+    the flattened linked list. */
+Node *merge(Node *left, Node *right)
+{
+    Node *temp = new Node(0), *res = temp;
+
+    while (left && right)
+    {
+        if (left->data <= right->data)
+        {
+            temp->bottom = left;
+            left = left->bottom;
+            temp = temp->bottom;
+        }
+        else
+        {
+            temp->bottom = right;
+            right = right->bottom;
+            temp = temp->bottom;
+        }
+    }
+
+    if (left)
+    {
+        temp->bottom = left;
+    }
+    else
+    {
+        temp->bottom = right;
+    }
+
+    return res->bottom;
+}
+
+Node *flatten(Node *root)
+{
+    if (root == NULL || root->next == nullptr)
+    {
+        return root;
+    }
+
+    Node *right = flatten(root->next);
+    return merge(root, right);
+}
+
+ListNode *detectCycle(ListNode *head)
+{
+    unordered_set<ListNode *> nodeSet;
+
+    while ((nodeSet.find(head) == nodeSet.end()) && (head != nullptr))
+    {
+        nodeSet.insert(head);
+        head = head->next;
+    }
+
+    return head;
+}
+
+ListNode *detectCycle2(ListNode *head)
+{
+    ListNode *fast = head, *slow = head;
+
+    while (fast->next != nullptr)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+        if (slow == fast)
+        {
+            fast = head;
+            break;
+        }
+    }
+
+    while (fast != slow)
+    {
+        slow = slow->next;
+        fast = fast->next;
+    }
+
+    return slow;
+}
+
+ListNode *reverseKGroup(ListNode *&head, int k, int flag = 0)
+{
+    ListNode *currptr = head, *prevPtr = nullptr, *nextPtr = nullptr;
+    int count = 0;
+
+    if (flag < k)
+    {
+        while ((currptr != nullptr) && (count < k))
+        {
+            nextPtr = currptr->next;
+            currptr->next = prevPtr;
+            prevPtr = currptr;
+            currptr = nextPtr;
+            ++count;
+        }
+        k -= count;
+        flag += count;
+        if (nextPtr != nullptr)
+        {
+            head->next = reverseKGroup(nextPtr, k, flag);
+        }
+        return prevPtr;
+    }
+
+    return currptr;
+}
+
+int removeDuplicates(vector<int> &nums)
+{
+    int num = nums[0], ind = 1;
+
+    for (size_t i = 1; i < nums.size(); i++)
+    {
+        if (nums[i] != num)
+        {
+            num = nums[i];
+            swap(nums[i], nums[ind++]);
+        }
+    }
+
+    return ind;
+}
+
+ListNode *rotateRight(ListNode *head, int k)
+{
+    ListNode *prev = head, *last = head, *temp = head;
+
+    int len = 0;
+
+    if ((last == NULL) || (last->next == NULL))
+    {
+        return last;
+    }
+
+    while (temp)
+    {
+        temp = temp->next;
+        ++len;
+    }
+    temp = head;
+
+    if (k % len == 0)
+    {
+        return head;
+    }
+
+    if (k > len)
+    {
+        k = k % len;
+
+        while (k > 0)
+        {
+            while (last->next != nullptr)
+            {
+                prev = last;
+                last = last->next;
+            }
+            prev->next = nullptr;
+            last->next = temp;
+            temp = last;
+            --k;
+        }
+    }
+    else
+    {
+        while (k > 0)
+        {
+            while (last->next != nullptr)
+            {
+                prev = last;
+                last = last->next;
+            }
+            prev->next = nullptr;
+            last->next = temp;
+            temp = last;
+            --k;
+        }
+    }
+    return temp;
+}
+
+// Better
+ListNode *rotateRight2(ListNode *head, int k)
+{
+    ListNode *temp = head;
+
+    int len = 1;
+
+    if ((temp == NULL) || (temp->next == NULL) || (k == 0))
+    {
+        return head;
+    }
+
+    while (temp->next != nullptr)
+    {
+        temp = temp->next;
+        ++len;
+    }
+    temp->next = head;
+    k = k % len;
+    k = len - k;
+
+    while (k--)
+    {
+        temp = temp->next;
+    }
+    head = temp->next;
+    temp->next = nullptr;
+    return head;
+}
+
+vector<vector<int>> threeSum2(vector<int> &nums)
+{
+    vector<vector<int>> ans;
+    unordered_map<int, int> hash;
+    vector<int> vec;
+    set<vector<int>> uSet;
+
+    for (size_t i = 0; i < nums.size(); i++)
+    {
+        hash[nums[i]]++;
+    }
+
+    for (size_t i = 0; i < nums.size(); i++)
+    {
+        hash[nums[i]]--;
+        for (size_t j = i + 1; j < nums.size(); j++)
+        {
+            hash[nums[j]]--;
+            int a = -1 * (nums[i] + nums[j]);
+            if ((hash.find(a) != hash.end()) && (hash.find(a)->second > 0))
+            {
+                vec.push_back(nums[i]);
+                vec.push_back(nums[j]);
+                vec.push_back(a);
+                sort(vec.begin(), vec.end());
+                uSet.insert(vec);
+                vec.clear();
+            }
+            hash[nums[j]]++;
+        }
+        hash[nums[i]]++;
+    }
+    ans.assign(uSet.begin(), uSet.end());
+    return ans;
+}
+
+vector<vector<int>> threeSum(vector<int> &nums)
+{
+    vector<vector<int>> ans;
+    sort(nums.begin(), nums.end());
+    int ind = 0, left = 1, right = nums.size() - 1;
+
+    for (ind = 0; ind < (int)(nums.size()) - 2; ind++)
+    {
+        if ((ind == 0) || (ind > 0 && nums[ind] != nums[ind - 1]))
+        {
+            left = ind + 1, right = (int)(nums.size()) - 1;
+            int a = 0 - (nums[ind]);
+            while (left < right)
+            {
+                if (nums[left] + nums[right] == a)
+                {
+                    vector<int> vec;
+                    vec.push_back(nums[ind]);
+                    vec.push_back(nums[left]);
+                    vec.push_back(nums[right]);
+                    ans.push_back(vec);
+
+                    while (left < right && (nums[left] == nums[left + 1]))
+                        left++;
+                    while (left < right && (nums[right] == nums[right - 1]))
+                        right--;
+
+                    left++, right--;
+                }
+                else if (nums[left] + nums[right] < a)
+                {
+                    ++left;
+                }
+                else
+                {
+                    right--;
+                }
+            }
+        }
+    }
+    return ans;
+}
+
+int maxMeetings(int start[], int end[], int n)
+{
+    int count = 1;
+    vector<vector<int>> vec(n, vector<int>(2));
+
+    for (size_t i = 0; i < n; i++)
+    {
+        vec[i][0] = end[i];
+        vec[i][1] = start[i];
+    }
+    sort(vec.begin(), vec.end());
+    int last = vec[0][0];
+
+    for (size_t i = 1; i < n; i++)
+    {
+        if (vec[i][1] > last)
+        {
+            ++count;
+            last = vec[i][0];
+        }
+    }
+
+    return count;
+}
+
+vector<vector<int>> findDifference(vector<int> &nums1, vector<int> &nums2)
+{
+    vector<vector<int>> vec;
+    vector<int> dummy;
+    sort(nums1.begin(), nums1.end());
+    sort(nums2.begin(), nums2.end());
+
+    for (size_t i = 0; i < nums1.size(); i++)
+    {
+        if ((i == 0) || (i > 0 && nums1[i] != nums1[i - 1]))
+        {
+            if (binary_search(nums2.begin(), nums2.end(), nums1[i]) == false)
+            {
+                dummy.push_back(nums1[i]);
+            }
+        }
+    }
+    vec.push_back(dummy);
+    dummy.clear();
+
+    for (size_t i = 0; i < nums2.size(); i++)
+    {
+        if ((i == 0) || (i > 0 && nums2[i] != nums2[i - 1]))
+        {
+            if (binary_search(nums1.begin(), nums1.end(), nums2[i]) == false)
+            {
+                dummy.push_back(nums2[i]);
+            }
+        }
+    }
+    vec.push_back(dummy);
+    return vec;
+}
+
+int minDeletion(vector<int> &nums)
+{
+    int ind = 0, siz = 1;
+    vector<int> dummy;
+
+    if ((nums.size() == 1))
+    {
+        return 1;
+    }
+    for (size_t i = 0; i < nums.size() - 1; i++)
+    {
+        if (((ind & 1) == 0) && (nums[i] == nums[i + 1]))
+        {
+            // ++ind;
+            continue;
+        }
+        else
+        {
+            ++ind;
+            dummy.push_back(nums[i]);
+        }
+    }
+
+    if (nums[nums.size() - 2] != nums[nums.size() - 1])
+    {
+        dummy.push_back(nums[nums.size() - 1]);
+    }
+
+    if ((dummy.size() & 1) == 1)
+    {
+        dummy.pop_back();
+    }
+
+    siz = nums.size() - dummy.size();
+    nums = dummy;
+    return siz;
+}
+
+// Comparator function
+bool comp(pair<int, int> p1, pair<int, int> p2)
+{
+    if (p1.second < p2.second)
+    {
+        return true;
+    }
+    else if (p1.second == p2.second)
+    {
+        if (p2.first > p1.first)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int missingNumber(vector<int> &nums)
+{
+    int n = nums.size();
+    n = ((n + 1) * (n) / 2);
+
+    int sum = 0;
+    sum = accumulate(nums.begin(), nums.end(), sum);
+
+    return n - sum;
+}
+
+bool remove(vector<int> &vec, int a, int d)
+{
+    for (size_t i = 0; i < vec.size(); i++)
+    {
+        if (vec[i] < a)
+        {
+            vec[i] = d;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int findPlatform(int arr[], int dep[], int n)
+{
+    vector<int> vec;
+    sort(arr, arr + n);
+    sort(dep, dep + n);
+
+    int count = 1;
+    vec.push_back(dep[0]);
+
+    for (size_t i = 1; i < n; i++)
+    {
+        if (arr[i] > vec[vec.size() - 1])
+        {
+            vec[vec.size() - 1] = dep[i];
+        }
+        else
+        {
+            if (remove(vec, arr[i], dep[i]) == 0)
+            {
+                ++count;
+                vec.push_back(dep[i]);
+            }
+        }
+    }
+
+    return count;
+}
+
+// More Optimized Way
+int findPlatform2(int arr[], int dep[], int n)
+{
+    int arrInd = 1, depInd = 0, platCount = 1, maxCount = 1;
+    sort(arr, arr + n);
+    sort(dep, dep + n);
+
+    while ((arrInd < n) && (depInd < n))
+    {
+        if (arr[arrInd] > dep[depInd])
+        {
+            ++depInd;
+            --platCount;
+        }
+        else if (arr[arrInd] <= dep[depInd])
+        {
+            ++platCount;
+            ++arrInd;
+        }
+        maxCount = max(maxCount, platCount);
+    }
+
+    return maxCount;
+}
+
+bool comparatorJob(Job j1, Job j2)
+{
+    if (j1.profit > j2.profit)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool addProfit(vector<int> &maxD, int d)
+{
+    for (size_t i = d; i >= 1; i--)
+    {
+        if (maxD[i] == -1)
+        {
+            maxD[i] = d;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+vector<int> JobScheduling(Job arr[], int n)
+{
+    vector<int> ans(2);
+    sort(arr, arr + n, comparatorJob);
+    int profit = 0, noJob = 0, size = 0;
+
+    for (size_t i = 0; i < n; i++)
+    {
+        if (arr[i].dead > size)
+        {
+            size = arr[i].dead;
+        }
+    }
+    vector<int> maxD(size + 1, -1);
+
+    for (size_t i = 0; i < n; i++)
+    {
+        if (addProfit(maxD, arr[i].dead))
+        {
+            ++noJob;
+            profit += arr[i].profit;
+        }
+    }
+
+    ans[0] = noJob;
+    ans[1] = profit;
+
+    return ans;
+}
+
+bool compt(Item l1, Item l2)
+{
+    double res = ((double)l1.value / (double)l1.weight), res2 = (double)l2.value / (double)l2.weight;
+    if (res > res2)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+double fractionalKnapsack(int W, Item arr[], int n)
+{
+    sort(arr, arr + n, compt);
+
+    double ans = 0.0, ratio = 0.0;
+    double weight = 0.0;
+
+    for (size_t i = 0; i < n; i++)
+    {
+        if (weight + arr[i].weight < W)
+        {
+            weight += arr[i].weight;
+            ans += arr[i].value;
+        }
+        else
+        {
+            weight = W - weight;
+            ratio = (double)arr[i].value / (double)arr[i].weight;
+            ans += (weight * ratio);
+            break;
+        }
+    }
+
+    return ans;
+}
+
+int findMinimumCoins(int amount)
+{
+    vector<int> vec = {1, 2, 5, 10, 20, 50, 100, 500, 1000};
+    int ind = vec.size() - 1, count = 0;
+
+    while ((amount > 0) && (ind >= 0))
+    {
+        if (amount >= vec[ind])
+        {
+            while ((amount - vec[ind]) >= 0)
+            {
+                ++count;
+                amount = amount - vec[ind];
+            }
+        }
+        ind--;
+    }
+
+    return count;
+}
+
+double midValue(double num, int n)
+{
+    double res = 1.0;
+    for (size_t i = 1; i < n; i++)
+    {
+        res *= num;
+    }
+    return res;
+}
+
+double findNthRootOfM(int n, long long m)
+{
+    double low = 1, high = m;
+    double eps = 1e-6;
+
+    while ((high - low) > (eps))
+    {
+        double mid = high + low / 2.0;
+        double res = 1.0;
+        for (size_t i = 1; i < n; i++)
+        {
+            res *= mid;
+        }
+        if (res > m)
+        {
+            high = mid;
+        }
+        else
+        {
+            low = mid;
+        }
+    }
+
+    return low;
+}
+
+int singleNonDuplicate(vector<int> &nums)
+{
+    int low = 0, high = nums.size() - 2;
+
+    while (low <= high)
+    {
+        int mid = (low + high) >> 1;
+        if (nums[mid] == nums[mid ^ 1])
+        {
+            low = mid + 1;
+        }
+        else
+        {
+            high = mid - 1;
+        }
+    }
+
+    return nums[low];
+}
+
+int search(vector<int> &nums, int target)
+{
+    int low = 0, high = nums.size() - 1;
+
+    while (low <= high)
+    {
+        int mid = (low + high) >> 1;
+        if (nums[mid] == target)
+        {
+            return mid;
+        }
+
+        if ((nums[low] <= nums[mid]))
+        {
+            if ((nums[low] <= target) && (nums[mid] >= target))
+                high = mid - 1;
+            else
+            {
+                low = mid + 1;
+            }
+        }
+        else
+        {
+            if (((nums[high] >= target) && (nums[mid] <= target)))
+                low = mid + 1;
+            else
+            {
+                high = mid - 1;
+            }
+        }
+    }
+
+    return -1;
+}
+
+int countLessmid(vector<int> matrix, int mid)
+{
+    int low = 0, high = matrix.size() - 1;
+
+    while (low <= high)
+    {
+        int mid = low + high >> 1;
+        if (matrix[mid] <= mid)
+        {
+            low = mid + 1;
+        }
+        else
+        {
+            high = mid - 1;
+        }
+    }
+    return low;
+}
+
+int findMedian(vector<vector<int>> &matrix)
+{
+    int low = INT_MAX, high = 0, c = matrix[0].size();
+
+    for (size_t i = 0; i < matrix.size(); i++)
+    {
+        if (matrix[i][0] < low)
+        {
+            low = matrix[i][0];
+        }
+        if (matrix[i][c] > high)
+        {
+            high = matrix[i][c - 1];
+        }
+    }
+
+    int desired = (matrix.size() * c + 1) >> 1;
+    while (low < high)
+    {
+        int mid = low + (mid - low) >> 1;
+        int place = 0;
+
+        for (size_t i = 0; i < matrix.size(); i++)
+        {
+            place += upper_bound(matrix[i].begin(), matrix[i].end(), mid) - matrix[i].begin();
+        }
+
+        if (place < desired)
+        {
+            low = mid + 1;
+        }
+        else
+        {
+            high = mid;
+        }
+    }
+    return low;
+}
+
+double findMedianSortedArrays2(vector<int> &nums1, vector<int> &nums2)
+{
+    double ans = 0.0;
+
+    int n1 = 0, n2 = 0,
+        flag = (nums1.size() + nums2.size()) >> 1, count = 0, l1 = 0, l2 = 0;
+
+    while ((n1 < nums1.size()) && (n2 < nums2.size()))
+    {
+        if (nums1[n1] <= nums2[n2])
+        {
+            if ((count == flag))
+            {
+                l1 = nums1[n1];
+            }
+            if ((count == flag - 1))
+            {
+                l2 = nums1[n1];
+            }
+            ++count;
+            ++n1;
+        }
+        else
+        {
+            if ((count == flag))
+            {
+                l1 = nums2[n2];
+            }
+            if ((count == flag - 1))
+            {
+                l2 = nums2[n2];
+            }
+            ++count;
+            ++n2;
+        }
+    }
+
+    while ((n1 < nums1.size()))
+    {
+        if ((count == flag))
+        {
+            l1 = nums1[n1];
+        }
+        if ((count == flag - 1))
+        {
+            l2 = nums1[n1];
+        }
+        ++count;
+        ++n1;
+    }
+
+    while ((n2 < nums2.size()))
+    {
+        if ((count == flag))
+        {
+            l1 = nums2[n2];
+        }
+        if ((count == flag - 1))
+        {
+            l2 = nums2[n2];
+        }
+        ++count;
+        ++n2;
+    }
+
+    if (((nums1.size() + nums2.size()) & 1) == 0)
+    {
+        ans = (double)(l1 + l2) / 2;
+        return ans;
+    }
+    ans = (l1);
+    return ans;
+}
+
+double findMedianSortedArrays(vector<int> &nums1, vector<int> &nums2)
+{
+    if (nums2.size() < nums1.size())
+    {
+        return findMedianSortedArrays(nums2, nums1);
+    }
+    int n1 = nums1.size();
+    int n2 = nums2.size();
+    int low = 0, high = n1;
+    int l1 = INT_MIN, l2 = INT_MIN, r1 = INT_MAX, r2 = INT_MAX;
+
+    while (low <= high)
+    {
+        int cut1 = (high + low) >> 1;
+        int cut2 = (n1 + n2 + 1) / 2 - cut1;
+
+        l1 = (cut1 == 0) ? (INT_MIN) : (nums1[cut1 - 1]);
+        l2 = (cut2 == 0) ? (INT_MIN) : (nums2[cut2 - 1]);
+
+        r1 = (cut1 == n1) ? (INT_MAX) : (nums1[cut1]);
+        r2 = (cut2 == n2) ? (INT_MAX) : (nums2[cut2]);
+
+        if ((l1 <= r2) && (l2 <= r1))
+        {
+            if ((n1 + n2) % 2 == 0)
+            {
+                return (max(l1, l2) + min(r1, r2)) / 2.0;
+            }
+            else
+            {
+                return max(l1, l2);
+            }
+        }
+        else if (l1 > r2)
+        {
+            high = cut1 - 1;
+        }
+        else
+        {
+            low = cut1 + 1;
+        }
+    }
+
+    return 0.0;
+}
+
+int kthElement(int arr1[], int arr2[], int n, int m, int k)
+{
+
+    if (m < n)
+    {
+        return kthElement(arr2, arr1, m, n, k);
+    }
+    int low = 0, high = n;
+
+    while (low <= high)
+    {
+        int cut1 = (low + high) >> 1;
+        int cut2 = k - cut1;
+
+        if (cut2 > m)
+        {
+            low = cut1 + 1;
+            continue;
+        }
+
+        if (cut2 < 0)
+        {
+            high = cut1 - 1;
+            continue;
+        }
+
+        int l1 = (cut1 == 0) ? (INT_MIN) : (arr1[cut1 - 1]);
+        int l2 = (cut2 == 0) ? (INT_MIN) : (arr2[cut2 - 1]);
+
+        int r1 = (cut1 == n) ? (INT_MAX) : (arr1[cut1]);
+        int r2 = (cut2 == m) ? (INT_MAX) : (arr2[cut2]);
+
+        if ((l1 <= r2) && (l2 <= r1))
+        {
+            return max(l1, l2);
+        }
+
+        if (l1 > r2)
+        {
+            high = cut1 - 1;
+        }
+        else
+        {
+            low = cut1 + 1;
+        }
+    }
+    return 0;
+}
+
+int kthElement(int arr1[], int arr2[], int n, int m, int k)
+{
+    if (m < n)
+    {
+        return kthElement(arr2, arr1, m, n, k);
+    }
+    int low = max(0, k - m), high = min(k, n);
+
+    while (low <= high)
+    {
+        int cut1 = (low + high) >> 1;
+        int cut2 = k - cut1;
+
+        int l1 = (cut1 == 0) ? (INT_MIN) : (arr1[cut1 - 1]);
+        int l2 = (cut2 == 0) ? (INT_MIN) : (arr2[cut2 - 1]);
+
+        int r1 = (cut1 == n) ? (INT_MAX) : (arr1[cut1]);
+        int r2 = (cut2 == m) ? (INT_MAX) : (arr2[cut2]);
+
+        if ((l1 <= r2) && (l2 <= r1))
+        {
+            return max(l1, l2);
+        }
+
+        if (l1 > r2)
+        {
+            high = cut1 - 1;
+        }
+        else
+        {
+            low = cut1 + 1;
+        }
+    }
+    return 0;
+}
+
+bool noOfStudents(vector<int> &A, int mid, int B)
+{
+    int ans = 0, sum = 0;
+    for (size_t i = 0; i < A.size(); i++)
+    {
+        if (sum + A[i] > mid)
+        {
+            ++ans;
+            sum = A[i];
+            if (sum > mid)
+                return 0;
+        }
+        else
+            sum += A[i];
+    }
+
+    if (ans < B)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int books(vector<int> &A, int B)
+{
+    if (B > A.size())
+    {
+        return -1;
+    }
+
+    int low = A[0], high = 0, ans = -1;
+    for (size_t i = 0; i < A.size(); i++)
+    {
+        high += A[i];
+        low = min(low, A[i]);
+    }
+
+    while (low <= high)
+    {
+        int mid = (low + high) >> 1;
+        if (noOfStudents(A, mid, B))
+        {
+            ans = mid;
+            high = mid - 1;
+        }
+        else
+        {
+            low = mid + 1;
+        }
+    }
+    return low;
+}
+
+void sumComb(vector<int> &candidates, vector<vector<int>> &ans, vector<int> &ds, int target, int ind)
+{
+    if (ind == candidates.size())
+    {
+        if (target == 0)
+        {
+            ans.push_back(ds);
+        }
+        return;
+    }
+
+    if (target == 0)
+    {
+        ans.push_back(ds);
+        return;
+    }
+
+    for (size_t i = ind; i < candidates.size(); i++)
+    {
+        if (target < candidates[i])
+        {
+            return;
+        }
+        if ((i != ind) && (candidates[i] == candidates[i - 1]))
+        {
+            continue;
+        }
+        ds.push_back(candidates[i]);
+        sumComb(candidates, ans, ds, target - candidates[i], i);
+        ds.pop_back();
+    }
+    return;
+}
+
+vector<vector<int>> combinationSum(vector<int> &candidates, int target)
+{
+    sort(candidates.begin(), candidates.end());
+    vector<vector<int>> ans;
+    vector<int> ds;
+    sumComb(candidates, ans, ds, target, 0);
+    return ans;
+}
+
+void sumComb2(vector<int> &candidates, vector<vector<int>> &ans, vector<int> &ds, int target, int ind)
+{
+    if (ind == candidates.size())
+    {
+        if (target == 0)
+        {
+            ans.push_back(ds);
+        }
+        return;
+    }
+
+    if (target == 0)
+    {
+        ans.push_back(ds);
+        return;
+    }
+
+    for (size_t i = ind; i < candidates.size(); i++)
+    {
+        if (target < candidates[i])
+        {
+            return;
+        }
+        if ((i != 0) && (candidates[i] == candidates[i - 1]))
+        {
+            continue;
+        }
+        ds.push_back(candidates[i]);
+        sumComb(candidates, ans, ds, target - candidates[i], i + 1);
+        ds.pop_back();
+    }
+    return;
+}
+
+vector<vector<int>> combinationSum2(vector<int> &candidates, int target)
+{
+    sort(candidates.begin(), candidates.end());
+    vector<vector<int>> ans;
+    vector<int> ds;
+    sumComb2(candidates, ans, ds, target, 0);
+    return ans;
+}
+
+bool isPalindrome(string s, int start, int end)
+{
+    int i = start, j = end;
+
+    while (i <= j)
+    {
+        if (s[i++] != s[j--])
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+void func(string s, int ind, vector<vector<string>> &ans, vector<string> &str)
+{
+    if (ind == s.length())
+    {
+        ans.push_back(str);
+        return;
+    }
+
+    for (size_t i = ind; i < s.length(); i++)
+    {
+        if (isPalindrome(s, ind, i))
+        {
+            str.push_back(s.substr(ind, i - ind + 1));
+            func(s, i + 1, ans, str);
+            str.pop_back();
+        }
+    }
+
+    return;
+}
+
+vector<vector<string>> partition(string s)
+{
+    vector<vector<string>> ans;
+    vector<string> str;
+    func(s, 0, ans, str);
+    return ans;
+}
+
+string getPermutation(int n, int k)
+{
 }
 
 int main()
 {
-    long long int arr[] = {2, 5, 1, 3, 4};
-    cout << getInversions(arr, sizeof(arr) / sizeof(arr[0])) << endl;
+    // cout << getInversions(arr, sizeof(arr) / sizeof(arr[0])) << endl;
+    vector<int> vec = {1, 3, 4}, vec1 = {2};
+    // int arr[3] = {900, 1100, 1235};
+    // int dep[3] = {1000, 1200, 1240};
+    // cout << findPlatform(arr, dep, 3) << endl;
 
-    // cout << longestConsecutive(3, 7) << endl;
+    int arr1[] = {1, 10, 10, 25, 40, 54, 79}, arr2[] = {15, 24, 27, 32, 33, 39, 48, 68, 82, 88, 90};
 
-    vector<int> vec = {4, 2, 2, 6, 4};
+    // int arr1[] = {2, 3, 6, 7, 9}, arr2[] = {1, 4, 8, 10, 11};
+    cout << kthElement(arr1, arr2, 7, 11, 15) << endl;
 
-    // cout << lengthOfLongestSubstring("abcaabcd") << endl;
-    // cout << subarraysXor4(vec, 6) << endl;
+    // cout << findMedianSortedArrays(vec, vec1) << endl;
+    // Job jobs[] = {{1, 2, 100}, {2, 1, 19}, {3, 2, 27}, {4, 1, 25}, {5, 1, 15}};
+    // int n = sizeof(jobs) / sizeof(jobs[0]);
+    // Item values[] = {{100, 20}, {120, 30}, {60, 10}};
+    // cout << fractionalKnapsack(50, values, 3) << endl;
 
-    // for (auto &&i : twoSum(vec, 9))
+    // for (auto &&i :)
     // {
     //     cout << i << " ";
     // }
@@ -1601,7 +3114,7 @@ int main()
     // v = {{1}};
     // cout << searchMatrix(v, 1) << endl;
 
-    // for (auto &&i : arraySub(vec))
+    // for (auto &&i : threeSum(vec))
     // {
     //     for (auto &&j : i)
     //     {
@@ -1612,5 +3125,18 @@ int main()
 
     // long long int arr[] = {52244275, 123047899, 493394237, 922363607, 378906890, 188674257, 222477309, 902683641, 860884025, 339100162};
 
+    // int sum = 807, b = 0;
+    // cout << 7 % 10 << endl;
+    // while (sum > 0)
+    // {
+    //     b = sum % 10;
+    //     cout << b << " ";
+    //     sum = sum / 10;
+    // }
+
+    // pair  vector
+    // vector<pair<int, int>> v = {{7, 1}, {6, 0}, {0, 1}, {3, 2}};
+    // sort(v.begin(), v.end(), comp);
+    // int a;
     return 0;
 }

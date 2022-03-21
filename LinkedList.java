@@ -1,3 +1,5 @@
+import java.util.*;
+
 class LinkedList {
     Node head;
 
@@ -180,7 +182,7 @@ class LinkedList {
     }
 
     public ListNode removeNthFromEnd(ListNode head, int n) {
-        ListNode newNode = new ListNode(0,head);
+        ListNode newNode = new ListNode(0, head);
         ListNode slow = newNode, fast = newNode;
 
         for (int i = 0; i < n; i++) {
@@ -193,6 +195,158 @@ class LinkedList {
         }
         slow.next = slow.next.next;
         return newNode.next;
+    }
+
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        int sum = 0, carry = 0;
+        ListNode newNode = new ListNode(), head = newNode;
+
+        while ((l1 != null) || (l2 != null) || (carry != 0)) {
+            sum = 0;
+            if (l1 != null) {
+                sum += l1.val;
+                l1 = l1.next;
+            }
+            if (l2 != null) {
+                sum += l2.val;
+                l2 = l2.next;
+            }
+            sum += carry;
+            carry = sum / 10;
+            newNode.next = new ListNode(sum % 10);
+            newNode = newNode.next;
+        }
+
+        return head.next;
+    }
+
+    public boolean hasCycle2(ListNode head) {
+        ListNode slow = head, fast = head;
+        if (head == null) {
+            return false;
+        }
+
+        if (head.next != null) {
+            while ((fast != null) && (fast.next != null)) {
+                slow = slow.next;
+                fast = fast.next.next;
+                if (slow == fast) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean hasCycle(ListNode head) {
+        Set<ListNode> nodeSet = new HashSet<ListNode>();
+        while ((nodeSet.contains(head) == false) && (head != null)) {
+            nodeSet.add(head);
+            head = head.next;
+        }
+
+        if (head == null) {
+            return false;
+        }
+        return true;
+    }
+
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        Set<ListNode> nodeSet = new HashSet<>();
+        while (headA != null) {
+            nodeSet.add(headA);
+            headA = headA.next;
+        }
+
+        while ((nodeSet.contains(headB) == false) && (headB != null)) {
+            headB = headB.next;
+        }
+        if (headB == null) {
+            return null;
+        }
+        return headB;
+    }
+
+    public ListNode getIntersectionNode2(ListNode headA, ListNode headB) {
+        ListNode h1 = headA, h2 = headB;
+
+        while ((h1 != null) || (h2 != null)) {
+            if ((h1 == h2) && (h1 != null) && (h2 != null)) {
+                return h1;
+            }
+
+            if (h1 == null) {
+                h1 = headB;
+                continue;
+            }
+            if (h2 == null) {
+                h2 = headA;
+                continue;
+            }
+            h1 = h1.next;
+            h2 = h2.next;
+        }
+
+        return null;
+    }
+
+    public boolean isPalindrome(ListNode head) {
+        ListNode s = head, f = head, d = s, prev = null;
+        int count = 1;
+        while ((f != null) && (f.next != null)) {
+            ++count;
+            d = s;
+            s = s.next;
+            f = f.next.next;
+        }
+
+        // for single node
+        if (count == 1) {
+            return true;
+        }
+
+        // Even ke liye
+        if (f == null) {
+            d.next = null;
+        }
+
+        // For odd no of node
+        if (f.next == null) {
+            d.next = null;
+            d = s;
+            s = s.next;
+        }
+
+        f = s.next;
+        while (f != null) {
+            s.next = prev;
+            prev = s;
+            s = f;
+            f = f.next;
+        }
+        s.next = prev;
+        prev = head;
+
+        while ((s != null) && (prev != null)) {
+            if (s.val != prev.val) {
+                return false;
+            }
+            s = s.next;
+            prev = prev.next;
+        }
+
+        return true;
+    }
+
+    public ListNode detectCycle(ListNode head) {
+        Set<ListNode> nodeSet = new HashSet<>();
+
+        while ((nodeSet.contains(head) == false) && (head != null)) {
+            nodeSet.add(head);
+            head = head.next;
+        }
+
+        return head;
     }
 
     public static void main(String[] args) {

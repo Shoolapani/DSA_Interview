@@ -5,6 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "Launch LinkedList",
+            "request": "launch",
+            "mainClass": "LinkedList",
+            "projectName": "DSA_Interview_98d7d89d"
+        },
+        {
+            "type": "java",
+            "name": "Launch test",
+            "request": "launch",
+            "mainClass": "test",
+            "projectName": "DSA_Interview_98d7d89d"
+        },
+        {
             "name": "g++.exe - Build and debug active file",
             "type": "cppdbg",
             "request": "launch",
