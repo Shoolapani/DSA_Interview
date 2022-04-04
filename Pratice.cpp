@@ -2863,7 +2863,7 @@ int kthElement(int arr1[], int arr2[], int n, int m, int k)
     return 0;
 }
 
-int kthElement(int arr1[], int arr2[], int n, int m, int k)
+int kthElement2(int arr1[], int arr2[], int n, int m, int k)
 {
     if (m < n)
     {
@@ -3081,8 +3081,47 @@ vector<vector<string>> partition(string s)
     return ans;
 }
 
-string getPermutation(int n, int k)
+vector<vector<int>> findWinners(vector<vector<int>> &matches)
 {
+}
+
+// converting to minutes
+int getTime(string time)
+{
+    return (stoi(time.substr(0, 2)) * 60) + (stoi(time.substr(3)));
+}
+
+int convertTime(string current, string correct)
+{
+    int diff = getTime(correct) - getTime(current), op[] = {60, 15, 5, 1}, ans = 0;
+    for (auto &&i : op)
+    {
+        ans += diff / i;
+        diff %= i;
+    }
+    return ans;
+}
+
+vector<vector<int>> findWinners(vector<vector<int>> &matches)
+{
+    set<int> all, loser, l2;
+    vector<int> a0, a1;
+    for (auto &&i : matches)
+    {
+        all.insert({i[0], i[1]});
+        if (loser.find(i[1]) == loser.end())
+        {
+            loser.insert(i[1]);
+        }
+        else
+        {
+            l2.insert(i[1]);
+        }
+    }
+    set_difference(all.begin(), all.end(), loser.begin(), loser.end(), back_inserter(a0));
+    set_difference(loser.begin(), loser.end(), l2.begin(), l2.end(), back_inserter(a1));
+
+    return {a0, a1};
 }
 
 int main()

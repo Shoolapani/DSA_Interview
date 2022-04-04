@@ -5,7 +5,16 @@
         "initializer_list": "cpp",
         "valarray": "cpp",
         "*.tcc": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "xstring": "cpp",
+        "xutility": "cpp",
+        "iosfwd": "cpp",
+        "stack": "cpp",
+        "algorithm": "cpp",
+        "random": "cpp",
+        "chrono": "cpp",
+        "utility": "cpp",
+        "unordered_set": "cpp"
     },
     "cSpell.words": [
         "stoi"
