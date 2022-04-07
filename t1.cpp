@@ -1,100 +1,55 @@
-// C++ program to Count
-// Inversions in an array
-// using Merge Sort
 #include <bits/stdc++.h>
+
 using namespace std;
-
-int _mergeSort(int arr[], int temp[], int left, int right);
-int merge(int arr[], int temp[], int left, int mid,
-          int right);
-
-/* This function sorts the
-input array and returns the
-number of inversions in the array */
-int mergeSort(int arr[], int array_size)
+void printAns(vector<vector<int>> &ans)
 {
-    int temp[array_size];
-    return _mergeSort(arr, temp, 0, array_size - 1);
-}
-
-/* An auxiliary recursive function
-that sorts the input array and
-returns the number of inversions in the array. */
-int _mergeSort(int arr[], int temp[], int left, int right)
-{
-    int mid, inv_count = 0;
-    if (right > left)
+    cout << "The unique subsets are " << endl;
+    cout << "[ ";
+    for (int i = 0; i < ans.size(); i++)
     {
-        /* Divide the array into two parts and
-        call _mergeSortAndCountInv()
-        for each of the parts */
-        mid = (right + left) / 2;
-
-        /* Inversion count will be sum of
-        inversions in left-part, right-part
-        and number of inversions in merging */
-        inv_count += _mergeSort(arr, temp, left, mid);
-        inv_count += _mergeSort(arr, temp, mid + 1, right);
-
-        /*Merge the two parts*/
-        inv_count += merge(arr, temp, left, mid + 1, right);
+        cout << "[ ";
+        for (int j = 0; j < ans[i].size(); j++)
+            cout << ans[i][j] << " ";
+        cout << "]";
     }
-    return inv_count;
+    cout << " ]";
 }
-
-/* This funt merges two sorted arrays
-and returns inversion count in the arrays.*/
-int merge(int arr[], int temp[], int left, int mid,
-          int right)
+class Solution
 {
-    int i, j, k;
-    int inv_count = 0;
-
-    i = left; /* i is index for left subarray*/
-    j = mid;  /* j is index for right subarray*/
-    k = left; /* k is index for resultant merged subarray*/
-    while ((i <= mid - 1) && (j <= right))
+private:
+    void findSubsets(int ind, vector<int> &nums, vector<int> &ds, vector<vector<int>> &ans)
     {
-        if (arr[i] <= arr[j])
+        if (ind == nums.size())
         {
-            // temp[k++] = arr[i++];
-            i++;
+            ans.push_back(ds);
+            return;
         }
-        else
+        ans.push_back(ds);
+        for (int i = ind; i < nums.size(); i++)
         {
-            // temp[k++] = arr[j++];
-            ++j;
-            /* this is tricky -- see above
-            explanation/diagram for merge()*/
-            inv_count = inv_count + (mid - i);
+            if (i != ind && nums[i] == nums[i - 1])
+                continue;
+            ds.push_back(nums[i]);
+            findSubsets(i + 1, nums, ds, ans);
+            ds.pop_back();
         }
     }
 
-    /* Copy the remaining elements of left subarray
-(if there are any) to temp*/
-    while (i <= mid - 1)
-        temp[k++] = arr[i++];
-
-    /* Copy the remaining elements of right subarray
-    (if there are any) to temp*/
-    while (j <= right)
-        temp[k++] = arr[j++];
-
-    /*Copy back the merged elements to original array*/
-    for (i = left; i <= right; i++)
-        arr[i] = temp[i];
-
-    return inv_count;
-}
-
-// Driver code
+public:
+    vector<vector<int>> subsetsWithDup(vector<int> &nums)
+    {
+        vector<vector<int>> ans;
+        vector<int> ds;
+        sort(nums.begin(), nums.end());
+        findSubsets(0, nums, ds, ans);
+        return ans;
+    }
+};
 int main()
 {
-    int arr[] = {1, 20, 6, 4, 5};
-    int n = sizeof(arr) / sizeof(arr[0]);
-    int ans = mergeSort(arr, n);
-    cout << " Number of inversions are " << ans;
+    Solution obj;
+    vector<int> nums = {1, 2, 2,3};
+    vector<vector<int>> ans = obj.subsetsWithDup(nums);
+    printAns(ans);
     return 0;
 }
-
-// This is code is contributed by rathbhupendra
