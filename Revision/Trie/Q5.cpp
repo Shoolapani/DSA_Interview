@@ -4,19 +4,22 @@ using namespace std;
 class Node
 {
 public:
-    Node *links[2];
-    bool containkeys(int bit)
+    bool ifContainKey(int bit)
     {
-        return (links[bit] != NULL);
+        return (links[bit] != nullptr);
     }
     void put(int bit, Node *node)
     {
         links[bit] = node;
     }
+
     Node *get(int bit)
     {
         return links[bit];
     }
+
+private:
+    Node *links[2];
 };
 
 class Trie
@@ -33,27 +36,24 @@ public:
         for (int i = 31; i >= 0; i--)
         {
             int bit = (num >> i) & 1;
-            if (!dummy->containkeys(bit))
+            if (!dummy->ifContainKey(bit))
             {
                 dummy->put(bit, new Node());
             }
             dummy = dummy->get(bit);
         }
-        return;
     }
 
-    // Find the max
-    int findMax(int num)
+    int maxXOR(int num)
     {
-        int maxNum = 0;
         Node *dummy = root;
+        int ans = 0;
         for (int i = 31; i >= 0; i--)
         {
             int bit = (num >> i) & 1;
-            if (dummy->containkeys(!bit))
+            if (dummy->ifContainKey(!bit))
             {
-                maxNum = maxNum | (1 << i);
-                // Please see this as I forgot this  !bit as we are opposite bit;
+                ans = (ans) | (1 << i);
                 dummy = dummy->get(!bit);
             }
             else
@@ -61,8 +61,7 @@ public:
                 dummy = dummy->get(bit);
             }
         }
-
-        return maxNum;
+        return ans;
     }
 
 private:
@@ -72,20 +71,21 @@ private:
 class Solution
 {
 public:
-    Trie trie;
+    Trie t;
     int findMaximumXOR(vector<int> &nums)
     {
-        int maxNum = 0;
-        for (auto &&it : nums)
+        for (auto &&i : nums)
         {
-            trie.insert(it);
+            t.insert(i);
         }
 
-        for (size_t i = 0; i < nums.size(); i++)
+        int ans = 0;
+
+        for (auto &&i : nums)
         {
-            maxNum = max(maxNum, trie.findMax(nums[i]));
+            ans = max(ans, t.maxXOR(i));
         }
-        return maxNum;
+        return ans;
     }
 };
 

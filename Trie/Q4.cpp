@@ -65,9 +65,6 @@ int countDistinctSubstrings(string &s)
 
 int main()
 {
-    int n = 9;
-    n = n | (1 << 2);
-    cout<<n;
 
     return 0;
 }

@@ -3,8 +3,10 @@ using namespace std;
 
 class Node
 {
-public:
+private:
     Node *links[2];
+
+public:
     bool containkeys(int bit)
     {
         return (links[bit] != NULL);
@@ -42,18 +44,16 @@ public:
         return;
     }
 
-    // Find the max
-    int findMax(int num)
+    int getMax(int num)
     {
-        int maxNum = 0;
         Node *dummy = root;
+        int maxNum = 0;
         for (int i = 31; i >= 0; i--)
         {
             int bit = (num >> i) & 1;
             if (dummy->containkeys(!bit))
             {
                 maxNum = maxNum | (1 << i);
-                // Please see this as I forgot this  !bit as we are opposite bit;
                 dummy = dummy->get(!bit);
             }
             else
@@ -61,7 +61,6 @@ public:
                 dummy = dummy->get(bit);
             }
         }
-
         return maxNum;
     }
 
@@ -69,41 +68,51 @@ private:
     Node *root;
 };
 
+// Offline Queries
 class Solution
 {
 public:
-    Trie trie;
-    int findMaximumXOR(vector<int> &nums)
+    vector<int> maximizeXor(vector<int> &nums, vector<vector<int>> &queries)
     {
-        int maxNum = 0;
-        for (auto &&it : nums)
+        sort(nums.begin(), nums.end());
+        vector<int> ans(queries.size(), 0);
+        vector<pair<int, pair<int, int>>> contVec;
+
+        int ind = 0;
+
+        // Offline Queries method
+        for (int i = 0; i < queries.size(); i++)
         {
-            trie.insert(it);
+            contVec.push_back({queries[i][1], {queries[i][0], i}});
         }
 
-        for (size_t i = 0; i < nums.size(); i++)
+        sort(contVec.begin(), contVec.end());
+        Trie trie;
+        for (int i = 0; i < queries.size(); i++)
         {
-            maxNum = max(maxNum, trie.findMax(nums[i]));
+            int a1 = contVec[i].first;
+            int x1 = contVec[i].second.first;
+            int qIndx = contVec[i].second.second;
+            while ((nums[ind] <= a1) && (ind < nums.size()))
+            {
+                trie.insert(nums[ind]);
+                ++ind;
+            }
+            if (ind == 0)
+            {
+                ans[qIndx] = -1;
+            }
+            else
+            {
+                ans[qIndx] = trie.getMax(x1);
+            }
         }
-        return maxNum;
+
+        return ans;
     }
 };
 
 int main()
 {
-    vector<int> nums = {3, 10, 5, 25, 2, 8}, vec1 = {2};
-
-    int maxnum = 0;
-    for (size_t i = 0; i < nums.size(); i++)
-    {
-        for (size_t j = i + 1; j < 4; j++)
-        {
-            maxnum = max(maxnum, nums[i] ^ nums[j]);
-        }
-    }
-    cout << maxnum << endl;
-
-    Solution sol;
-    cout << sol.findMaximumXOR(nums) << endl;
     return 0;
 }
