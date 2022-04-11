@@ -3081,10 +3081,6 @@ vector<vector<string>> partition(string s)
     return ans;
 }
 
-vector<vector<int>> findWinners(vector<vector<int>> &matches)
-{
-}
-
 // converting to minutes
 int getTime(string time)
 {
@@ -3102,26 +3098,82 @@ int convertTime(string current, string correct)
     return ans;
 }
 
-vector<vector<int>> findWinners(vector<vector<int>> &matches)
-{
-    set<int> all, loser, l2;
-    vector<int> a0, a1;
-    for (auto &&i : matches)
-    {
-        all.insert({i[0], i[1]});
-        if (loser.find(i[1]) == loser.end())
-        {
-            loser.insert(i[1]);
-        }
-        else
-        {
-            l2.insert(i[1]);
-        }
-    }
-    set_difference(all.begin(), all.end(), loser.begin(), loser.end(), back_inserter(a0));
-    set_difference(loser.begin(), loser.end(), l2.begin(), l2.end(), back_inserter(a1));
+// vector<vector<int>> findWinners(vector<vector<int>> &matches)
+// {
+//     set<int> all, loser, l2;
+//     vector<int> a0, a1;
+//     for (auto &&i : matches)
+//     {
+//         all.insert({i[0], i[1]});
+//         if (loser.find(i[1]) == loser.end())
+//         {
+//             loser.insert(i[1]);
+//         }
+//         else
+//         {
+//             l2.insert(i[1]);
+//         }
+//     }
+//     set_difference(all.begin(), all.end(), loser.begin(), loser.end(), back_inserter(a0));
+//     set_difference(loser.begin(), loser.end(), l2.begin(), l2.end(), back_inserter(a1));
 
-    return {a0, a1};
+//     return {a0, a1};
+// }
+
+int largestInteger(int num)
+{
+    stack<int> s;
+    vector<int> v;
+
+    while (num > 0)
+    {
+        s.push(num % 10);
+        num /= 10;
+    }
+
+    while (!s.empty())
+    {
+        v.push_back(s.top());
+        s.pop();
+    }
+
+    for (size_t i = 0; i < v.size(); i++)
+    {
+        int m = 0, Odd = INT_MIN;
+        for (size_t j = i + 1; j < v.size(); j++)
+        {
+            if ((v[i] % 2 == 0) && (v[j] % 2 == 0))
+            {
+                if (v[j] >= v[m])
+                {
+                    m = j;
+                }
+            }
+
+            if ((v[i] % 2 != 0) && (v[j] % 2 != 0))
+            {
+                if (v[j] >= v[m])
+                {
+                    m = j;
+                }
+            }
+        }
+        swap(v[i], v[m]);
+        m = i;
+    }
+
+    int ans = 0, ind = v.size() - 1;
+    for (size_t i = 0; i < v.size(); i++)
+    {
+        ans += (pow(10, i) * (v[ind]));
+        --ind;
+    }
+    return ans;
+}
+
+int maximumProduct(vector<int> &nums, int k)
+{
+    
 }
 
 int main()
@@ -3132,10 +3184,11 @@ int main()
     // int dep[3] = {1000, 1200, 1240};
     // cout << findPlatform(arr, dep, 3) << endl;
 
-    int arr1[] = {1, 10, 10, 25, 40, 54, 79}, arr2[] = {15, 24, 27, 32, 33, 39, 48, 68, 82, 88, 90};
+    // int arr1[] = {1, 10, 10, 25, 40, 54, 79}, arr2[] = {15, 24, 27, 32, 33, 39, 48, 68, 82, 88, 90};
 
     // int arr1[] = {2, 3, 6, 7, 9}, arr2[] = {1, 4, 8, 10, 11};
-    cout << kthElement(arr1, arr2, 7, 11, 15) << endl;
+    // cout << kthElement(arr1, arr2, 7, 11, 15) << endl;
+    cout << largestInteger(1234) << endl;
 
     // cout << findMedianSortedArrays(vec, vec1) << endl;
     // Job jobs[] = {{1, 2, 100}, {2, 1, 19}, {3, 2, 27}, {4, 1, 25}, {5, 1, 15}};
