@@ -22,7 +22,8 @@
         "queue": "cpp",
         "type_traits": "cpp",
         "xhash": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "forward_list": "cpp"
     },
     "cSpell.words": [
         "stoi"

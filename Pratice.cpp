@@ -3171,9 +3171,64 @@ int largestInteger(int num)
     return ans;
 }
 
-int maximumProduct(vector<int> &nums, int k)
+bool isValid(string s)
 {
-    
+    stack<char> st;
+    for (size_t i = 0; i < s.length(); i++)
+    {
+        if ((!st.empty()))
+        {
+            if ((s[i] == ')') && (st.top() == '(') || ((s[i] == '}') && (st.top() == '{')) || ((s[i] == ']') && (st.top() == '[')))
+            {
+                st.pop();
+            }
+            else
+            {
+                st.push(s[i]);
+            }
+        }
+        else
+        {
+            st.push(s[i]);
+        }
+    }
+    return (st.empty());
+}
+
+vector<int> nextGreaterElement(vector<int> &nums1, vector<int> &nums2)
+{
+    stack<int> s;
+    unordered_map<int, int> uMap;
+    vector<int> ans;
+    for (int i = nums2.size() - 1; i >= 0; i--)
+    {
+        while ((!s.empty()) && (s.top() < nums2[i]))
+        {
+            s.pop();
+        }
+        if (s.empty())
+        {
+            uMap.insert({nums2[i], -1});
+        }
+        else
+        {
+            uMap.insert({nums2[i], s.top()});
+        }
+        s.push(nums2[i]);
+    }
+
+    for (auto &&i : nums1)
+    {
+        if (uMap.count(i))
+        {
+            ans.push_back(uMap[i]);
+        }
+    }
+    return ans;
+}
+
+vector<int> Solution::prevSmaller(vector<int> &A)
+{
 }
 
 int main()
