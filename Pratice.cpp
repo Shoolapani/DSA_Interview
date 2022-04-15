@@ -3227,7 +3227,7 @@ vector<int> nextGreaterElement(vector<int> &nums1, vector<int> &nums2)
     return ans;
 }
 
-vector<int> Solution::prevSmaller(vector<int> &A)
+vector<int> prevSmaller(vector<int> &A)
 {
 }
 
