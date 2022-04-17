@@ -3229,6 +3229,60 @@ vector<int> nextGreaterElement(vector<int> &nums1, vector<int> &nums2)
 
 vector<int> prevSmaller(vector<int> &A)
 {
+    stack<int> s;
+    vector<int> ans(A.size());
+    for (size_t i = 0; i < A.size(); i++)
+    {
+        while ((!s.empty()) && (s.top() >= A[i]))
+        {
+            s.pop();
+        }
+        if (s.empty())
+        {
+            ans[i] = -1;
+        }
+        else
+        {
+            ans[i] = s.top();
+        }
+        s.push(A[i]);
+    }
+    return ans;
+}
+
+string funct(string lans)
+{
+    int ans = stoi(lans), temp = 0;
+    while (ans)
+    {
+        temp = ans % 10;
+        ans = ans / 10;
+    }
+    return to_string(temp);
+}
+
+string digitSum(string s, int k)
+{
+    string ans = "", lans = "";
+    int temp = 1;
+    int lsum = 0;
+    for (size_t i = 0; i < s.length(); i++)
+    {
+        if (temp == k)
+        {
+            lans += s[i];
+            temp = 1;
+            ans += funct(lans);
+            lans = "";
+        }
+        else
+        {
+            lans += s[i];
+            ++temp;
+        }
+    }
+    
+    return ans;
 }
 
 int main()
