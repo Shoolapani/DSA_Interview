@@ -10,7 +10,7 @@ class Node
     Node *prev;
     Node *next;
 
-    Node(int key_, int val_)
+    Node(int key_=0, int val_=0)
     {
         key = key_;
         val = val_;
