@@ -464,6 +464,185 @@ vector<vector<int>> getTreeTraversal(BinaryTreeNode *root)
     return ans;
 }
 
+// diameterOfBinaryTree
+// O(N^2)
+int heightOfTree(TreeNode *root)
+{
+    if (root == NULL)
+    {
+        return 0;
+    }
+
+    return 1 + max(heightOfTree(root->left), heightOfTree(root->right));
+}
+
+void helper(TreeNode *root, int &ans)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    int lh = heightOfTree(root->left);
+    int rh = heightOfTree(root->right);
+    ans = max(ans, lh + rh);
+    helper(root->left, ans);
+    helper(root->right, ans);
+}
+
+int diameterOfBinaryTree2(TreeNode *root)
+{
+    int ans = 0;
+    helper(root, ans);
+    return ans;
+}
+
+// O(N)
+int height(TreeNode *root, int &ans)
+{
+    if (root == NULL)
+    {
+        return 0;
+    }
+
+    int lh = height(root->left, ans);
+    int rh = height(root->right, ans);
+
+    ans = max(ans, lh + rh);
+    return 1 + (max(lh, rh));
+}
+
+int diameterOfBinaryTree(TreeNode *root)
+{
+    int ans = 0;
+    height(root, ans);
+    return ans;
+}
+
+// O(N^2) approach
+bool isBalanced2(TreeNode *root)
+{
+    if (root == NULL)
+    {
+        return true;
+    }
+
+    int lh = heightOfTree(root->left);
+    int rh = heightOfTree(root->right);
+
+    if (abs(lh - rh) > 1)
+    {
+        return false;
+    }
+
+    if ((isBalanced2(root->left) == false) || (isBalanced2(root->right) == false))
+    {
+        return false;
+    }
+    return true;
+}
+
+// Recursive Way
+TreeNode *invertTree(TreeNode *root)
+{
+    if (root)
+    {
+        invertTree(root->left);
+        invertTree(root->right);
+        swap(root->left, root->right);
+    }
+    return root;
+}
+
+// Non-recursive way
+TreeNode *invertTree2(TreeNode *root)
+{
+    stack<TreeNode *> st;
+    st.push(root);
+
+    while (!st.empty())
+    {
+        auto p = st.top();
+        st.pop();
+        if (p != NULL)
+        {
+            st.push(p->left);
+            st.push(p->right);
+            swap(p->left, p->right);
+        }
+    }
+    return root;
+}
+
+// O(N)
+int DFSHeight(TreeNode *root)
+{
+    if (root == NULL)
+    {
+        return 0;
+    }
+
+    int lh = DFSHeight(root->left);
+    int rh = DFSHeight(root->right);
+
+    if ((lh == -1) || (rh == -1))
+    {
+        return -1;
+    }
+
+    if (abs(lh - rh) > 1)
+    {
+        return -1;
+    }
+
+    return 1 + max(lh, rh);
+}
+
+bool isBalanced(TreeNode *root)
+{
+    return (DFSHeight(root) != -1);
+}
+
+// My approach
+bool isSameTree2(TreeNode *p, TreeNode *q)
+{
+    if ((p == NULL) && (q == NULL))
+    {
+        return true;
+    }
+    if ((p != nullptr) && (q != nullptr))
+    {
+        if (p->val != q->val)
+        {
+            return false;
+        }
+    }
+    if ((p == NULL) && (q != nullptr))
+    {
+        return false;
+    }
+    if ((q == NULL) && (p != nullptr))
+    {
+        return false;
+    }
+    if ((isSameTree2(p->left, q->left) == false) || (isSameTree2(p->right, q->right) == false))
+    {
+        return false;
+    }
+    return true;
+}
+
+// Striver Approach
+bool isSameTree(TreeNode *p, TreeNode *q)
+{
+    if ((p == NULL) || (q == NULL))
+    {
+        return (p == q);
+    }
+
+    return (p->val == q->val) && ((isSameTree(p->left, q->left)) && (isSameTree(p->right, q->right)));
+}
+
 int main()
 {
     struct Node *root = newNode(1);

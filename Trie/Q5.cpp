@@ -19,6 +19,7 @@ public:
     }
 };
 
+// Trie Contain every Element of an array
 class Trie
 {
 public:
@@ -32,6 +33,7 @@ public:
         Node *dummy = root;
         for (int i = 31; i >= 0; i--)
         {
+            // Check if bit is set or not
             int bit = (num >> i) & 1;
             if (!dummy->containkeys(bit))
             {
