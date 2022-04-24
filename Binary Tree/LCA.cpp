@@ -67,7 +67,7 @@ TreeNode *lowestCommonAncestor(TreeNode *root, TreeNode *p, TreeNode *q)
     TreeNode *right = lowestCommonAncestor(root->right, p, q);
     if (left == NULL)
     {
-        return right;
+        return right;                                                                     
     }
     if (right == NULL)
     {

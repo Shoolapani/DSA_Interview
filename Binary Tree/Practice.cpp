@@ -111,16 +111,6 @@ TreeNode *invertTree(TreeNode *root)
     return root;
 }
 
-int maxDepth(TreeNode *root)
-{
-    if (root = nullptr)
-    {
-        return 0;
-    }
-
-    return (1 + max(maxDepth(root->left), maxDepth(root->right)));
-}
-
 vector<vector<int>> levelOrder(TreeNode *root)
 {
     vector<vector<int>> ans;
@@ -152,6 +142,17 @@ vector<vector<int>> levelOrder(TreeNode *root)
         ans.push_back(ds);
     }
     return ans;
+}
+
+// Recursive
+int maxDepth(TreeNode *root)
+{
+    if (root = nullptr)
+    {
+        return 0;
+    }
+
+    return (1 + max(maxDepth(root->left), maxDepth(root->right)));
 }
 
 // BFS
@@ -519,29 +520,6 @@ int diameterOfBinaryTree(TreeNode *root)
     return ans;
 }
 
-// O(N^2) approach
-bool isBalanced2(TreeNode *root)
-{
-    if (root == NULL)
-    {
-        return true;
-    }
-
-    int lh = heightOfTree(root->left);
-    int rh = heightOfTree(root->right);
-
-    if (abs(lh - rh) > 1)
-    {
-        return false;
-    }
-
-    if ((isBalanced2(root->left) == false) || (isBalanced2(root->right) == false))
-    {
-        return false;
-    }
-    return true;
-}
-
 // Recursive Way
 TreeNode *invertTree(TreeNode *root)
 {
@@ -572,6 +550,29 @@ TreeNode *invertTree2(TreeNode *root)
         }
     }
     return root;
+}
+
+// O(N^2) approach
+bool isBalanced2(TreeNode *root)
+{
+    if (root == NULL)
+    {
+        return true;
+    }
+
+    int lh = heightOfTree(root->left);
+    int rh = heightOfTree(root->right);
+
+    if (abs(lh - rh) > 1)
+    {
+        return false;
+    }
+
+    if ((isBalanced2(root->left) == false) || (isBalanced2(root->right) == false))
+    {
+        return false;
+    }
+    return true;
 }
 
 // O(N)
@@ -641,6 +642,80 @@ bool isSameTree(TreeNode *p, TreeNode *q)
     }
 
     return (p->val == q->val) && ((isSameTree(p->left, q->left)) && (isSameTree(p->right, q->right)));
+}
+
+bool ifSymmetric(TreeNode *left, TreeNode *right)
+{
+    if ((left == NULL) || (right == NULL))
+    {
+        return (left == right);
+    }
+
+    if (left->val != right->val)
+    {
+        return false;
+    }
+
+    return (ifSymmetric(left->left, right->right) && ifSymmetric(left->right, right->left));
+}
+
+bool isSymmetric(TreeNode *root)
+{
+    return (root == NULL) || (ifSymmetric(root->left, root->right));
+}
+
+// Recursive
+// Reverse Preorder Right left Root
+// O(N) O(N)
+TreeNode *prevNode = NULL;
+void flatten(TreeNode *root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    flatten(root->right);
+    flatten(root->left);
+
+    root->right = prevNode;
+    root->left = NULL;
+    prevNode = root;
+    return;
+}
+
+// Iterative
+// Preorder
+// O(N) O(N)
+void flatten(TreeNode *root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+    stack<TreeNode *> st;
+    st.push(root);
+    while (!st.empty())
+    {
+        TreeNode *subroot = st.top();
+        st.pop();
+
+        if (subroot->right)
+        {
+            st.push(subroot->right);
+        }
+
+        if (subroot->left)
+        {
+            st.push(subroot->left);
+        }
+
+        if (!st.empty())
+        {
+            subroot->right = st.top();
+        }
+        subroot->left = NULL;
+    }
 }
 
 int main()
