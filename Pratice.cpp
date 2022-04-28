@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#define LL long long int
 using namespace std;
 
 struct Node
@@ -3281,8 +3282,73 @@ string digitSum(string s, int k)
             ++temp;
         }
     }
-    
+
     return ans;
+}
+
+int mergeArr(vector<int> &nums, int begin, int mid, int end)
+{
+    int right = mid + 1, total = 0;
+
+    for (size_t i = begin; i <= mid; i++)
+    {
+        while ((right <= total) && (nums[i] > 2 * nums[right]))
+        {
+            ++right;
+        }
+        total += (right - (mid + 1));
+    }
+
+    vector<int> ans;
+    right = mid + 1;
+    int i = begin;
+
+    while ((i <= mid) && (right <= end))
+    {
+        if (nums[i] <= nums[right])
+        {
+            ans.push_back(nums[i++]);
+        }
+        else
+        {
+            ans.push_back(nums[right++]);
+        }
+    }
+
+    while (i <= begin)
+    {
+        ans.push_back(nums[i++]);
+    }
+
+    while (right <= end)
+    {
+        ans.push_back(nums[right++]);
+    }
+
+    for (size_t j = begin; j <= end; j++)
+    {
+        nums[i] = ans[i - begin];
+    }
+    return total;
+}
+
+int mergeSort(vector<int> &nums, int begin, int end)
+{
+    int cnt{0};
+    int mid = (begin + (end - mid)) / 2;
+    if (begin < end)
+    {
+        cnt += mergeSort(nums, begin, mid);
+        cnt += mergeSort(nums, mid + 1, end);
+        cnt += mergeArr(nums, begin, mid, end);
+    }
+
+    return cnt;
+}
+
+int reversePairs(vector<int> &nums)
+{
+    return mergeSort(nums, 0, nums.size() - 1);
 }
 
 int main()
