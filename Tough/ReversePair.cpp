@@ -4,47 +4,47 @@ using namespace std;
 
 int merge(vector<int> &nums, int begin, int mid, int end)
 {
-    int total = 0;
-    int i = begin, j = mid;
-    vector<int> temp;
-
+    int cnt = 0;int i = begin, j = mid;
     for (i = begin; i < mid; i++)
     {
-        while ((j <= end) && (nums[i] > ((LL)2 * nums[j])))
+        while ((j <= end) && ((LL)nums[i] > (2 * nums[j])))
         {
             ++j;
         }
-        total += (j - mid);
+        cnt += (j - mid);
     }
 
     i = begin, j = mid;
-    while ((i <= mid - 1) && (j <= end))
+    vector<int> ans;
+
+    while ((i < mid) && (j <= end))
     {
         if (nums[i] <= nums[j])
         {
-            temp.push_back(nums[i++]);
+            ans.push_back(nums[i++]);
         }
         else
         {
-            temp.push_back(nums[j++]);
+            ans.push_back(nums[j++]);
         }
     }
 
     while ((i < mid))
     {
-        temp.push_back(nums[i++]);
+        ans.push_back(nums[i++]);
     }
 
-    while ((j <= end))
+    while (j <= end)
     {
-        temp.push_back(nums[j++]);
+        ans.push_back(nums[j++]);
     }
 
-    for (size_t k = 0; k < temp.size(); k++)
+    for (size_t i = 0; i < ans.size(); i++)
     {
-        nums[k + begin] = temp[k];
+        nums[i + begin] = ans[i];
     }
-    return total;
+
+    return cnt;
 }
 
 int mergeSort(vector<int> &nums, int begin, int end)
@@ -67,8 +67,5 @@ int reversePairs(vector<int> &nums)
 
 int main()
 {
-    vector<int> arr{1, 3, 2, 3, 1};
-    cout << "The Total Reverse Pairs are " << reversePairs(arr);
-    int a;
     return 0;
 }

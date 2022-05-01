@@ -26,7 +26,6 @@ long long int merge(long long *arr, int n, long long int begin, long long int mi
     while (j <= end)
     {
         temp[k++] = arr[j++];
-        ans += (mid - i);
     }
 
     for (size_t i = begin; i <= end; i++)
