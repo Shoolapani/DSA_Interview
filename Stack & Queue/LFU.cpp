@@ -20,6 +20,7 @@ class Node
         next = NULL;
         prev = NULL;
     }
+    
     friend class LFUCache;
     friend class List;
 };

@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// O(n) *O(LenOftring)
+// O(n) *O(LenOfString)
 class Node
 {
 public:
