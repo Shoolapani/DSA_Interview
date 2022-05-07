@@ -180,6 +180,11 @@ TreeNode *lowestCommonAncestor(TreeNode *root, TreeNode *p, TreeNode *q)
     return root;
 }
 
+int kthSmallest(TreeNode *root, int k)
+{
+    
+}
+
 int main()
 {
     return 0;

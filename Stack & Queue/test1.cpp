@@ -1,146 +1,299 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 using namespace std;
 
-struct Node
+enum RideStatus
 {
-    int key, value, cnt;
-    Node *next;
-    Node *prev;
-    Node(int _key, int _value)
-    {
-        key = _key;
-        value = _value;
-        cnt = 1;
-    }
+	IDLE,
+	CREATED,
+	WITHDRAWN,
+	COMPLETED
 };
 
-struct List
+class Ride
 {
-    int size;
-    Node *head;
-    Node *tail;
-    List()
-    {
-        head = new Node(0, 0);
-        tail = new Node(0, 0);
-        head->next = tail;
-        tail->prev = head;
-        size = 0;
-    }
+public:
+	static const int AMT_PER_KM = 20;
+	Ride();
+	int calculateFare(bool);
+	void setDest(int dest);
+	int getId() const;
+	void setId(int id);
+	void setOrigin(int origin);
+	RideStatus getRideStatus() const;
+	void setRideStatus(RideStatus rideStatus);
+	void setSeats(int seats);
 
-    void addFront(Node *node)
-    {
-        Node *temp = head->next;
-        node->next = temp;
-        node->prev = head;
-        head->next = node;
-        temp->prev = node;
-        size++;
-    }
-
-    void removeNode(Node *delnode)
-    {
-        Node *delprev = delnode->prev;
-        Node *delnext = delnode->next;
-        delprev->next = delnext;
-        delnext->prev = delprev;
-        size--;
-    }
+private:
+	int id;
+	int origin, dest;
+	int seats;
+	RideStatus rideStatus;
 };
 
-class LFUCache
+class Person
 {
-    map<int, Node *> keyNode;
-    map<int, List *> freqListMap;
-    int maxSizeCache;
-    int minFreq;
-    int curSize;
+public:
+	string name;
+};
+
+class Driver : private Person
+{
+public:
+	Driver(string);
+};
+
+class Rider : private Person
+{
+private:
+	int id;
+	vector<Ride> completedRides;
+	Ride currentRide;
 
 public:
-    LFUCache(int capacity)
-    {
-        maxSizeCache = capacity;
-        minFreq = 0;
-        curSize = 0;
-    }
-    void updateFreqListMap(Node *node)
-    {
-        keyNode.erase(node->key);
-        freqListMap[node->cnt]->removeNode(node);
-        if (node->cnt == minFreq && freqListMap[node->cnt]->size == 0)
-        {
-            minFreq++;
-        }
-
-        List *nextHigherFreqList = new List();
-        if (freqListMap.find(node->cnt + 1) != freqListMap.end())
-        {
-            nextHigherFreqList = freqListMap[node->cnt + 1];
-        }
-        node->cnt += 1;
-        nextHigherFreqList->addFront(node);
-        freqListMap[node->cnt] = nextHigherFreqList;
-        keyNode[node->key] = node;
-    }
-
-    int get(int key)
-    {
-        if (keyNode.find(key) != keyNode.end())
-        {
-            Node *node = keyNode[key];
-            int val = node->value;
-            updateFreqListMap(node);
-            return val;
-        }
-        return -1;
-    }
-
-    void put(int key, int value)
-    {
-        if (maxSizeCache == 0)
-        {
-            return;
-        }
-        if (keyNode.find(key) != keyNode.end())
-        {
-            Node *node = keyNode[key];
-            node->value = value;
-            updateFreqListMap(node);
-        }
-        else
-        {
-            if (curSize == maxSizeCache)
-            {
-                List *list = freqListMap[minFreq];
-                keyNode.erase(list->tail->prev->key);
-                freqListMap[minFreq]->removeNode(list->tail->prev);
-                curSize--;
-            }
-            curSize++;
-            // new value has to be added who is not there previously
-            minFreq = 1;
-            List *listFreq = new List();
-            if (freqListMap.find(minFreq) != freqListMap.end())
-            {
-                listFreq = freqListMap[minFreq];
-            }
-            Node *node = new Node(key, value);
-            listFreq->addFront(node);
-            keyNode[key] = node;
-            freqListMap[minFreq] = listFreq;
-        }
-    }
+	Rider(int, string);
+	void createRide(int, int, int, int);
+	void updateRide(int, int, int, int);
+	void withdrawRide(int);
+	int closeRide();
+	int getId() const;
 };
 
-/**
- * Your LFUCache object will be instantiated and called as such:
- * LFUCache* obj = new LFUCache(capacity);
- * int param_1 = obj->get(key);
- * obj->put(key,value);
- */
+class System
+{
+private:
+	int drivers;
+	vector<Rider> riders;
+
+public:
+	System(int, vector<Rider> &);
+	void createRide(int, int, int, int, int);
+	void updateRide(int, int, int, int, int);
+	void withdrawRide(int, int);
+	int closeRide(int);
+};
+
+Ride::Ride()
+{
+	id = origin = dest = seats = 0;
+	rideStatus = RideStatus::IDLE;
+}
+
+Driver::Driver(string name)
+{
+	this->name = name;
+}
+
+int Ride::calculateFare(bool isPriorityRider)
+{
+	int dist = dest - origin;
+	if (seats < 2)
+	{
+		return dist * AMT_PER_KM * (isPriorityRider ? 0.75 : 1);
+	}
+
+	return dist * seats * AMT_PER_KM * (isPriorityRider ? 0.5 : 0.75);
+}
+
+void Ride::setDest(int dest)
+{
+	this->dest = dest;
+}
+
+int Ride::getId() const
+{
+	return id;
+}
+
+void Ride::setId(int id)
+{
+	this->id = id;
+}
+
+void Ride::setOrigin(int origin)
+{
+	this->origin = origin;
+}
+
+RideStatus Ride::getRideStatus() const
+{
+	return rideStatus;
+}
+
+void Ride::setRideStatus(RideStatus rideStatus)
+{
+	this->rideStatus = rideStatus;
+}
+
+void Ride::setSeats(int seats)
+{
+	this->seats = seats;
+}
+
+Rider::Rider(int id, string name)
+{
+	this->id = id;
+	this->name = name;
+}
+
+void Rider::createRide(int id, int origin, int dest, int seats)
+{
+	if (origin >= dest)
+	{
+		cout << "Wrong values of Origin and Destination provided. Can't create ride\n";
+		return;
+	}
+
+	currentRide.setId(id);
+	currentRide.setOrigin(origin);
+	currentRide.setDest(dest);
+	currentRide.setSeats(seats);
+	currentRide.setRideStatus(RideStatus::CREATED);
+}
+void Rider::updateRide(int id, int origin, int dest, int seats)
+{
+	if (currentRide.getRideStatus() == RideStatus::WITHDRAWN)
+	{
+		cout << "Can't update ride. Ride was withdrawn\n";
+		return;
+	}
+	if (currentRide.getRideStatus() == RideStatus::COMPLETED)
+	{
+		cout << "Can't update ride. Ride already complete\n";
+		return;
+	}
+
+	createRide(id, origin, dest, seats);
+}
+
+void Rider::withdrawRide(int id)
+{
+	if (currentRide.getId() != id)
+	{
+		cout << "Wrong ride Id as input. Can't withdraw current ride\n";
+		return;
+	}
+	if (currentRide.getRideStatus() != RideStatus::CREATED)
+	{
+		cout << "Ride wasn't in progress. Can't withdraw ride\n";
+		return;
+	}
+
+	currentRide.setRideStatus(RideStatus::WITHDRAWN);
+}
+
+int Rider::getId() const
+{
+	return id;
+}
+
+int Rider::closeRide()
+{
+	if (currentRide.getRideStatus() != RideStatus::CREATED)
+	{
+		cout << "Ride wasn't in progress. Can't close ride\n";
+		return 0;
+	}
+
+	currentRide.setRideStatus(RideStatus::COMPLETED);
+	completedRides.push_back(currentRide);
+	return currentRide.calculateFare(completedRides.size() >= 10);
+}
+
+System::System(int drivers, vector<Rider> &riders)
+{
+	if (drivers < 2 || riders.size() < 2)
+	{
+		cout << "Not enough drivers or riders\n";
+	}
+
+	this->drivers = drivers;
+	this->riders = riders;
+}
+
+void System::createRide(int riderId, int rideId, int origin, int dest, int seats)
+{
+	if (drivers == 0)
+	{
+		cout << "No drivers around. Can't create ride\n";
+		return;
+	}
+
+	for (Rider &rider : riders)
+	{
+		if (rider.getId() == riderId)
+		{
+			rider.createRide(rideId, origin, dest, seats);
+			drivers--;
+			break;
+		}
+	}
+}
+void System::updateRide(int riderId, int rideId, int origin, int dest, int seats)
+{
+	for (Rider &rider : riders)
+	{
+		if (rider.getId() == riderId)
+		{
+			rider.updateRide(rideId, origin, dest, seats);
+			break;
+		}
+	}
+}
+void System::withdrawRide(int riderId, int rideId)
+{
+	for (Rider &rider : riders)
+	{
+		if (rider.getId() == riderId)
+		{
+			rider.withdrawRide(rideId);
+			drivers++;
+			break;
+		}
+	}
+}
+int System::closeRide(int riderId)
+{
+	for (Rider &rider : riders)
+	{
+		if (rider.getId() == riderId)
+		{
+			drivers++;
+			return rider.closeRide();
+		}
+	}
+	return 0;
+}
 
 int main()
 {
+	Rider rider(1, "Lucifer");
+	Driver driver("Amenadiel");
+	Rider rider1(2, "Chloe");
+	Rider rider2(3, "Maze");
 
-    return 0;
+	vector<Rider> riders;
+	riders.push_back(rider);
+	riders.push_back(rider1);
+	riders.push_back(rider2);
+	System system(3, riders);
+
+	rider.createRide(1, 50, 60, 1);
+	cout << rider.closeRide() << endl;
+	rider.updateRide(1, 50, 60, 2);
+	cout << rider.closeRide() << endl;
+
+	cout << "*****************************************************************" << endl;
+
+	system.createRide(1, 1, 50, 60, 1);
+	system.withdrawRide(1, 1);
+	system.updateRide(1, 1, 50, 60, 2);
+	cout << system.closeRide(1) << endl;
+
+	cout << "*****************************************************************" << endl;
+
+	system.createRide(1, 1, 50, 60, 1);
+	system.updateRide(1, 1, 50, 60, 2);
+	cout << system.closeRide(1) << endl;
+	return 0;
 }
