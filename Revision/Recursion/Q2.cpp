@@ -10,7 +10,9 @@ void rightPlace(stack<int> &s, int value)
         s.push(value);
         return;
     }
+
     int x = s.top();
+    
     if (x >= value)
     {
         s.push(value);

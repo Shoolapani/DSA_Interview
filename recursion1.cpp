@@ -126,15 +126,14 @@ int kthGrammar(int n, int k)
 
 void toh(int n, int from, int to, int aux)
 {
-    if (n == 1)
+    if (n == 0)
     {
-        cout << "Moving" << n << " from " << from << " to " << aux << " using " << to << endl;
         return;
     }
-
     toh(n - 1, from, aux, to);
-    cout << "Moving" << n << " from " << from << " to " << to << " using " << aux << endl;
-    toh(n - 1, from, to, aux);
+    cout << "Moving rod " << n << " from " << from << " to " << to << " using " << aux << endl;
+    toh(n - 1, aux, to, from);
+    return;
 }
 
 void subsets(string ip, string op = "")
