@@ -12,14 +12,14 @@ public:
     {
         cout << "Base" << endl;
     }
-    // ~Base()
-    // {
-    //     cout << "Base Des" << endl;
-    // }
-    virtual ~Base()
+    ~Base()
     {
         cout << "Base Des" << endl;
     }
+    // virtual ~Base()
+    // {
+    //     cout << "Base Des" << endl;
+    // }
 };
 
 class Derived : public Base

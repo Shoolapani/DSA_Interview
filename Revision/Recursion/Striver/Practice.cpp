@@ -89,11 +89,46 @@ vector<vector<int>> combinationSum(vector<int> &candidates, int target)
     return ans;
 }
 
+// void sum2(vector<int> &candidates, vector<vector<int>> &ans, vector<int> &ds, int target, int ind)
+// {
+//     if (ind == candidates.size())
+//     {
+//         if ((target == 0))
+//         {
+//             ans.push_back(ds);
+//         }
+//         return;
+//     }
+
+//     if ((target == 0))
+//     {
+//         ans.push_back(ds);
+//         return;
+//     }
+
+//     for (size_t i = ind; i < candidates.size(); i++)
+//     {
+//         if ((i != ind) && (candidates[i] == candidates[i - 1]))
+//         {
+//             continue;
+//         }
+//         ds.push_back(candidates[i]);
+//         sum(candidates, ans, ds, target - candidates[i], i + 1);
+//         ds.pop_back();
+//         sum(candidates, ans, ds, target, i + 1);
+//     }
+// }
+
 void sum2(vector<int> &candidates, vector<vector<int>> &ans, vector<int> &ds, int target, int ind)
 {
-    if ((target == 0))
+    if (target == 0)
     {
         ans.push_back(ds);
+        return;
+    }
+
+    if (candidates[ind] > target)
+    {
         return;
     }
 
@@ -103,13 +138,13 @@ void sum2(vector<int> &candidates, vector<vector<int>> &ans, vector<int> &ds, in
         {
             continue;
         }
-        if (target >= candidates[i])
+        if (candidates[i] > target)
         {
-            ds.push_back(candidates[i]);
-            sum(candidates, ans, ds, target - candidates[i], i + 1);
-            ds.pop_back();
+            return;
         }
-        sum(candidates, ans, ds, target, i + 1);
+        ds.push_back(candidates[i]);
+        sum2(candidates, ans, ds, target - candidates[i], i + 1);
+        ds.pop_back();
     }
     return;
 }
@@ -125,12 +160,12 @@ vector<vector<int>> combinationSum2(vector<int> &candidates, int target)
 
 int main()
 {
-    vector<int> arr = {2, 3, 6, 7};
+    vector<int> arr = {10, 1, 2, 7, 6, 1, 5};
     // for (auto &&i : combinationSum(arr, arr.size()))
     // {
     //     cout << i << " ";
     // }
-    for (auto &&i : combinationSum2(arr, 7))
+    for (auto &&i : combinationSum2(arr, 8))
     {
         for (auto &&j : i)
         {
