@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+
 vector<int> twoSum2(vector<int> &nums, int target)
 {
     int low = 0, high = nums.size() - 1;
@@ -87,7 +88,53 @@ vector<vector<int>> fourSum(vector<int> &nums, int target)
     return ans;
 }
 
+void permutation(string s, string str, vector<int> &v, vector<string> &ans)
+{
+    if (s.length() == str.length())
+    {
+        ans.push_back(str);
+        return;
+    }
+
+    for (size_t i = 0; i < v.size(); i++)
+    {
+        if (!v[i])
+        {
+            v[i] = 1;
+            str += s[i];
+            permutation(s, str, v, ans);
+            v[i] = 0;
+            str.pop_back();
+        }
+    }
+    return;
+}
+
+vector<string> find_permutation(string s)
+{
+    vector<string> ans;
+    vector<int> v(s.length(), 0);
+    permutation(s, "", v, ans);
+    return ans;
+}
+
+bool isPowerOfTwo(int n)
+{
+    if ((n == 0))
+    {
+        return 1;
+    }
+    if (!n & (n - 1))
+    {
+        return 1;
+    }
+    return 0;
+}
+
+
+
 int main()
 {
+    cout << isPowerOfTwo(0);
     return 0;
 }
