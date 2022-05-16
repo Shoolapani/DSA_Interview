@@ -93,7 +93,8 @@ int main()
     l.put(1, 1);
     l.put(2, 1);
     cout << l.get(2) << endl;
-    l.put(4, 1);
-    cout << l.get(2) << endl;
+    l.put(4, 6);
+    cout << l.get(4) << endl;
+    cout << l.get(-1) << endl;
     return 0;
 }
