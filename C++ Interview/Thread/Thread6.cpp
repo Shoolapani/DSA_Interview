@@ -40,6 +40,7 @@ public:
             cout << x << endl;
         }
     }
+    // 5. using non-static member function
     static void funct2(int x)
     {
         std::lock_guard<mutex> lg(m);
@@ -59,7 +60,7 @@ int main()
     // std::thread t2(Base(), 10);
     Base2 b;
     std::thread t3(&Base2::funct, &b, 10);
-    std::thread t4(&Base2::funct2,10);
+    std::thread t4(&Base2::funct2, 10);
     // t2.join();
     t3.join();
     t4.join();
