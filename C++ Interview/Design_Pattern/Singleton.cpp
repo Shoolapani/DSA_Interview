@@ -13,8 +13,8 @@ public:
             instanceSingleTon = nullptr;
         }
     }
-    SingleTon(const SingleTon &) = delete;
-    SingleTon &operator=(SingleTon const &) = delete;
+    // SingleTon(const SingleTon &) = delete;
+    // SingleTon &operator=(SingleTon const &) = delete;
     void set(int val);
     void get()
     {
@@ -51,6 +51,8 @@ int main()
     // singleTon->get();
     singleTon2->set(50);
     singleTon2->get();
+    singleTon->get();
+
 
     int a = 2;
     int &b = a;

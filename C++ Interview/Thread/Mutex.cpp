@@ -4,9 +4,12 @@
 #include <chrono>
 #include <thread>
 #include <mutex>
+using namespace std;
 
 std::map<std::string, std::string> g_pages;
 std::mutex g_pages_mutex;
+
+unsigned int n = std::thread::hardware_concurrency();
 
 void save_page(const std::string &url)
 {
@@ -14,7 +17,7 @@ void save_page(const std::string &url)
     std::this_thread::sleep_for(std::chrono::seconds(2));
     std::string result = "fake content";
 
-    std::lock_guard<std::mutex> guard(g_pages_mutex);9-0
+    std::lock_guard<std::mutex> guard(g_pages_mutex);
     g_pages[url] = result;
 }
 
@@ -30,5 +33,6 @@ int main()
     {
         std::cout << pair.first << " => " << pair.second << '\n';
     }
+    cout << "n " << n << endl;
     return 0;
 }
