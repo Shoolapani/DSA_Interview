@@ -49,7 +49,7 @@ void task_b()
 int main()
 {
     std::thread t1(task_a);
-    std::thread t2(task_a);
+    std::thread t2(task_b);
     t1.join();
     t2.join();
     return 0;

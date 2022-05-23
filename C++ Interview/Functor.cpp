@@ -21,6 +21,7 @@ public:
         return this->val * val;
     }
 };
+
 class foo
 {
     int val;

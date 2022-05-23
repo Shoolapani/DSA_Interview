@@ -1,4 +1,4 @@
-// Try lock for std::try_lock();
+// Try lock for std::try_lock(); return -1 on success if fails return mutex index
 // is diff from mutex.try_lock();
 #include <bits/stdc++.h>
 #include <thread>
@@ -31,22 +31,25 @@ void consumeXorY()
 {
     int count = 5;
     int XplusY = 0;
-    while (--count)
+    while (1)
     {
         int lockResult = std::try_lock(m1, m2);
         if (lockResult == -1)
         {
-            XplusY += x + y;
-            x = 0;
-            y = 0;
-            cout << " x + y " << XplusY << endl;
+            if (x != 0 && y != 0)
+            {
+                --count;
+                XplusY += x + y;
+                cout << " x + y " << XplusY << endl;
+                x = 0;
+                y = 0;
+            }
+            // imp steps
+            m1.unlock();
+            m2.unlock();
         }
-        // imp steps
-        m1.unlock();
-        m2.unlock();
     }
 }
-
 
 int main()
 {

@@ -47,12 +47,12 @@ int main()
 {
     SingleTon *singleTon = SingleTon::getInstance();
     SingleTon *singleTon2 = singleTon;
+
     singleTon->set(20);
     // singleTon->get();
     singleTon2->set(50);
     singleTon2->get();
     singleTon->get();
-
 
     int a = 2;
     int &b = a;
