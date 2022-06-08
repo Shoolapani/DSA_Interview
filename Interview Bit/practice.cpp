@@ -1393,9 +1393,9 @@ int firstMissingPositive2(vector<int> &A)
 int firstMissingPositive(vector<int> &A)
 {
     int ans = 0, sum = 0;
-    for (size_t i = 0; i < A.size(); i++)
+    for (int i = 0; i < A.size(); i++)
     {
-        if ((A[i] > 0) && (i + 1 == A[i]))
+        if ((A[i] > 0) && (A[i] <= A.size()))
         {
             if (A[i] != A[A[i] - 1])
             {
@@ -1996,7 +1996,7 @@ string findDigitsInBinary(int A)
     return s;
 }
 
-// Maximum Unsorted Subarray
+// Maximum Unsorted Sub array
 vector<int> subUnsort(vector<int> &A)
 {
     vector<int> ans(2, 0);
@@ -2038,7 +2038,8 @@ vector<int> subUnsort(vector<int> &A)
     int t_i = i - 1, t_right = right + 1;
     while (t_i >= 0)
     {
-        if (A[t_i] >= minEle)
+        // Equal to wala mat lena
+        if (A[t_i] > minEle)
         {
             --t_i;
         }
@@ -2050,7 +2051,7 @@ vector<int> subUnsort(vector<int> &A)
 
     while (t_right < A.size())
     {
-        if (A[t_right] <= maxEle)
+        if (A[t_right] < maxEle)
         {
             ++t_right;
         }
@@ -2066,14 +2067,52 @@ vector<int> subUnsort(vector<int> &A)
     return ans;
 }
 
+vector<vector<int>> prettyPrint(int A)
+{
+    vector<vector<int>> ans((2 * A) - 1, vector<int>((2 * A) - 1, A));
+    int left = 1, right = (2 * A) - 3;
+    int top = 1, bottom = (2 * A) - 3;
+    int ele = A - 1;
+
+    while ((left <= right) && (top <= bottom))
+    {
+        for (size_t i = left; i <= right; i++)
+        {
+            ans[top][i] = ele;
+        }
+        ++top;
+
+        for (size_t i = top; i <= bottom; i++)
+        {
+            ans[i][right] = ele;
+        }
+        --right;
+
+        for (int i = right; i >= left; i--)
+        {
+            ans[bottom][i] = ele;
+        }
+        --bottom;
+
+        for (int i = bottom; i >= top; i--)
+        {
+            ans[i][left] = ele;
+        }
+        ++left;
+
+        --ele;
+    }
+    return ans;
+}
+
 int main()
 {
     vector<int> A = {1, 3, 2, 4, 5};
     // cout << findDigitsInBinary(6) << endl;
-    for (auto &&i : subUnsort(A))
-    {
-        cout << i << ",";
-    }
+    // for (auto &&i : subUnsort(A))
+    // {
+    //     cout << i << ",";
+    // }
     // cout << endl;
     // for (auto &&i : d)
     // {
@@ -2081,14 +2120,14 @@ int main()
     // }
     // cout << endl;
 
-    // for (auto &&i : generateMatrix(3))
-    // {
-    //     for (auto &&j : i)
-    //     {
-    //         cout << j << " ";
-    //     }
-    //     cout << endl;
-    // }
+    for (auto &&i : prettyPrint(3))
+    {
+        for (auto &&j : i)
+        {
+            cout << j << " ";
+        }
+        cout << endl;
+    }
 
     // vector<Interval> v = {{{1, 1}, {2, 3}, {3, 8}, {4, 7}, {5, 6}, {6, 6}}};
     // for (auto &&i : merge(v))
