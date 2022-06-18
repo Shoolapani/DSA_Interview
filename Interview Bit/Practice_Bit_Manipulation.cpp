@@ -152,6 +152,146 @@ int solve(int A)
     return (x ^ A);
 }
 
+int divide(int dividend, int divisor)
+{
+    if ((dividend == INT_MIN) && (divisor == -1))
+    {
+        return INT_MAX;
+    }
+
+    int a = abs(dividend), b = abs(divisor);
+    int res = 0;
+
+    while ((a - b) >= 0)
+    {
+        int x = 0;
+        while ((a - (b << x << 1)) >= 0)
+        {
+            ++x;
+        }
+        res += (1 << x);
+        a -= (b << x);
+    }
+
+    return (dividend > 0) == (divisor > 0) ? (res) : (-res);
+}
+
+int divide2(int A, int B)
+{
+    if (A == INT_MIN && B == -1)
+        return INT_MAX;
+    int a = abs(A), b = abs(B), res = 0, x = 0;
+    while (a - b >= 0)
+    {
+        for (x = 0; a - (b << x << 1) >= 0; x++)
+            ;
+        res += 1 << x;
+        a -= b << x;
+    }
+    return (A > 0) == (B > 0) ? res : -res;
+}
+
+int swapBits(int x, int p1, int p2, int n)
+{
+    unsigned int a = (x >> p1) & ((1U << n) - 1);
+    bitset<8> bit_a(a);
+    cout << "a: " << bit_a << endl;
+    unsigned int b = (x >> p2) & ((1U << n) - 1);
+    bitset<8> bit_b(b);
+    cout << "b: " << bit_b << endl;
+    unsigned int c = a ^ b;
+    bitset<8> bit_c(c);
+    cout << "c: " << bit_c << endl;
+    c = (c << p1) | (c << p2);
+    bitset<8> bit_d(c);
+    cout << "c: " << bit_d << endl;
+    int ans = x ^ c;
+    return ans;
+}
+
+// Swap Bits
+int solveBits(int A, int B, int C)
+{
+    // unsigned int a = (A >> B) & ((1U << 1) - 1);
+    // bitset<8> bit_a(a);
+    // cout << "a: " << bit_a << endl;
+    // unsigned int b = (A >> C) & ((1U << 1) - 1);
+    // bitset<8> bit_b(b);
+    // cout << "b: " << bit_b << endl;
+    // unsigned int c = a ^ b;
+    // bitset<8> bit_c(c);
+    // cout << "c: " << bit_c << endl;
+    // c = (c << B) | (c << C);
+    // bitset<8> bit_d(c);
+    // cout << "c: " << bit_d << endl;
+    bitset<8> bit_a(A);
+    // cout << "a: " << bit_a << endl;
+    // int flag1 = 0, flag2 = 0;
+    if (A & (1 << B))
+    {
+        flag1 = 1;
+    }
+
+    if (A & (1 << C))
+    {
+        flag2 = 1;
+    }
+
+    if (flag1 && flag2)
+    {
+        return A;
+    }
+
+    unsigned int ans = A | (flag1 << B);
+    // bitset<8> bit_as(ans);
+    // cout << "ans: " << bit_as << endl;
+    ans = A | (flag2 << C);
+
+    return ans;
+}
+
+// XOR-ing the Subarrays!
+int solve(vector<int> &A)
+{
+    int res = 0;
+
+    for (size_t i = 0; i < A.size(); i++)
+    {
+        int freq = (i + 1) * (A.size() - i);
+
+        if (freq & 1)
+        {
+            res = res ^ A[i];
+        }
+    }
+
+    return res;
+}
+
+bool findPair(vector<int> &A, int B)
+{
+    sort(A.begin(), A.end());
+    int i = 0, j = 1;
+
+    while (i <= j)
+    {
+        if ((i != j) && ((A[j] - A[i] == B) || (A[i] - A[j] == B)))
+        {
+            return 1;
+        }
+
+        if ((A[j] - A[i]) <= B)
+        {
+            ++j;
+        }
+        else
+        {
+            ++i;
+        }
+    }
+    return 0;
+}
+
 int main()
 {
     // cout << hammingWeight2(15) << endl;
@@ -179,7 +319,12 @@ int main()
     //     }
     // }
 
-    cout << solve(11) << endl;
+    // cout << solve(11) << endl;
+    int x = 47, P1 = 1,
+        P2 = 5,
+        N = 3;
+    // cout << swapBits(x, P1, P2, N) << endl;
+    cout << solveBits(8, 1, 3) << endl;
 
     return 0;
 }

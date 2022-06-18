@@ -92,50 +92,6 @@ int solveBitonic(vector<int> &A, int B)
     return -1;
 }
 
-int solveBitonic2(vector<int> &A, int B)
-{
-    int low = 0, high = A.size() - 1;
-
-    while (low <= high)
-    {
-        int mid = (low + high) >> 1;
-
-        if (B == A[mid])
-        {
-            return mid;
-        }
-
-        if (A[low] <= A[mid])
-        {
-            if ((B >= A[low]) && (B <= A[mid]))
-            {
-                high = mid;
-            }
-            else
-            {
-                low = mid + 1;
-            }
-        }
-        else
-        {
-            if ((B >= A[mid]) && (B <= A[high]))
-            {
-                low = mid;
-            }
-            else
-            {
-                high = mid - 1;
-            }
-        }
-    }
-    if (B == A[low])
-    {
-        return low;
-    }
-
-    return -1;
-}
-
 // Smaller or equal elements
 int solveSmaller(vector<int> &A, int B)
 {
@@ -891,11 +847,127 @@ void getNthRoot(int n, int m)
     cout << n << "th root of " << m << " is " << low << endl;
 }
 
+int peak(vector<int> &A)
+{
+    int start = 0;
+    int end = A.size() - 1;
+    int mid;
+    while (start <= end)
+    {
+        mid = start + (end - start) / 2;
+        if (A[0] > A[1])
+            return 0;
+        if (A[end - 1] < A[end])
+            return end;
+        if (A[mid] > A[mid - 1] && A[mid] > A[mid + 1])
+            return mid;
+        else if (A[mid] > A[mid - 1] || A[mid] < A[mid + 1])
+            start = mid + 1;
+        else if (A[mid] < A[mid - 1] || A[mid] > A[mid + 1])
+            end = mid - 1;
+    }
+    return -1;
+}
+
+int solveBitonic2(vector<int> &A, int B)
+{
+    int s1 = 0;
+    int l1 = peak(A);
+    int s2 = l1;
+    int l2 = A.size() - 1;
+    int m1, m2;
+    while (s1 <= l1)
+    {
+        m1 = s1 + (l1 - s1) / 2;
+        if (A[m1] == B)
+            return m1;
+        else if (A[m1] > B)
+            l1 = m1 - 1;
+        else
+            s1 = m1 + 1;
+    }
+    while (s2 <= l2)
+    {
+        m2 = s2 + (l2 - s2) / 2;
+        if (A[m2] == B)
+            return m2;
+        else if (A[m2] > B)
+            s2 = m2 + 1;
+        else
+        {
+            l2 = m2 - 1;
+        }
+    }
+    return -1;
+}
+
+// Painter's Partition Problem
+int findPainter(vector<int> &C, int limit)
+{
+    int sum = 0, painter = 1;
+
+    for (auto &&i : C)
+    {
+        sum += i;
+        if (sum > limit)
+        {
+            sum = i;
+            ++painter;
+        }
+    }
+
+    return painter;
+}
+#define ll long long
+int paint(int A, int B, vector<int> &C)
+{
+    long long int low = 0, high = 0;
+    for (auto &&i : C)
+    {
+        low = max(low, 1ll * i);
+        high += i;
+    }
+    long long int ans = 0;
+    while (low <= high)
+    {
+        long long int mid = low + ((high - low) / 2);
+        long long int painter = findPainter(C, mid);
+        if (painter <= A)
+        {
+            high = mid - 1;
+            ans = mid;
+        }
+        else
+        {
+            low = mid + 1;
+        }
+    }
+    return (ans * B) % 10000003;
+}
+
+int solveSubarray(vector<int> &A, int B)
+{
+    int i = 0, j = 0;
+    int sum = 0, ans = 0;
+    while (i < A.size())
+    {
+        sum += i;
+        while (sum >= B)
+        {
+            sum -= A[j];
+            ++j;
+        }
+        ans += (i - j + 1);
+        ++i;
+    }
+    return ans;
+}
+
 int main()
 {
-    vector<int> A = {1, 3, 5, 7};
-    getNthRoot(2, 9);
-    // cout << searchInsert(A, 2) << endl;
+    vector<int> A = {1, 3, 5, 7, 2, 0};
+    // getNthRoot(2, 9);
+    cout << solveBitonic2(A, 2) << endl;
     // cout << floorSqrt(930675566) << endl;
     // for (auto &&i : searchRange(A, 9))
     // {
