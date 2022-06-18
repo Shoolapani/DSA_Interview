@@ -8,7 +8,7 @@
 
 # Topics Covered
 
--[] Array
--[] string
--[] Bit Manipulation
--[] Two pointers
+- Array
+- string
+- Bit Manipulation
+- Two pointers
