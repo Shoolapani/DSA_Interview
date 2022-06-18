@@ -4,7 +4,7 @@
 
 - My DSA Practice Question
 - Every Day I try to do at least 2 question.
-- Hope to see achieve my Dreams.
+- Hope to achieve my Dreams.
 
 # Topics Covered
 
