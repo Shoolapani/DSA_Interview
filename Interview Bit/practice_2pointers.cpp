@@ -261,35 +261,33 @@ int subarraysWithKDistinct(vector<int> &nums, int k)
 //  Intersection of Two Arrays
 vector<int> intersection(vector<int> &nums1, vector<int> &nums2)
 {
-	if (nums2.size() > nums1.size())
-	{
-		return intersection(nums2, nums1);
-	}
-
+	sort(nums1.begin(), nums1.end());
+	sort(nums2.begin(), nums2.end());
 	vector<int> ans;
 	int i = 0, j = 0;
 
 	while ((i < nums1.size()) && (j < nums2.size()))
 	{
-		while ((i != 0) && (nums1[i] == nums1[i - 1]))
-		{
-			++i;
-		}
-		while ((j != 0) && (nums2[j] == nums2[j - 1]))
-		{
-			++j;
-		}
-
 		if (nums1[i] == nums2[j])
 		{
 			ans.push_back(nums1[i]);
+			++j;
 			++i;
 		}
-		if (nums1[i] < nums2[j])
+		else if (nums1[i] < nums2[j])
 		{
 			++i;
 		}
 		else
+		{
+			++j;
+		}
+
+		while ((i > 0) && (i < nums1.size()) && (nums1[i] == nums1[i - 1]))
+		{
+			++i;
+		}
+		while ((j > 0) && (j < nums2.size()) && (nums2[j] == nums2[j - 1]))
 		{
 			++j;
 		}
@@ -299,7 +297,12 @@ vector<int> intersection(vector<int> &nums1, vector<int> &nums2)
 
 int main()
 {
-	vector<int> nums = {3, 1, 4, 1, 5};
-	cout << countPairsWithDiffK(nums, 5, 2);
+	vector<int> nums = {4, 9, 5}, nums2 = {9, 4, 9, 8, 4};
+	// cout << countPairsWithDiffK(nums, 5, 2);
+	for (auto &&i : intersection(nums, nums2))
+	{
+		cout << i << " ";
+	}
+
 	return 0;
 }
