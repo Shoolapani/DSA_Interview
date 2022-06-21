@@ -9,6 +9,8 @@
 # Topics Covered
 
 - Array
+- Maths
 - string
 - Bit Manipulation
 - Two pointers
+- Linked List
