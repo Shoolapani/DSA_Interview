@@ -295,11 +295,152 @@ vector<int> intersection(vector<int> &nums1, vector<int> &nums2)
 	return ans;
 }
 
+// Merge Two Sorted Lists II
+void merge(vector<int> &A, vector<int> &B)
+{
+	vector<int> ds;
+	int i = 0, j = 0;
+
+	while ((i < A.size()) && (j < B.size()))
+	{
+		if (A[i] <= B[j])
+		{
+			ds.push_back(A[i++]);
+		}
+		else
+		{
+			ds.push_back(B[j++]);
+		}
+	}
+
+	while (j < B.size())
+	{
+		ds.push_back(B[j]);
+		++j;
+	}
+
+	while (i < A.size())
+	{
+		ds.push_back(A[i]);
+		++i;
+	}
+	A = ds;
+	return;
+}
+
+// Diffk
+int diffPossible(vector<int> &A, int B)
+{
+	int i = 0, j = 1;
+
+	while ((j < A.size()))
+	{
+		if ((abs(A[i] - A[j]) == B) && (i != j))
+		{
+			return 1;
+		}
+		if ((abs(A[i] - A[j]) <= B))
+		{
+			++j;
+		}
+		else
+		{
+			++i;
+		}
+	}
+	return 0;
+}
+
+// Maximum Ones After Modification
+// O(N^2)
+// TLE
+int solveOnes(vector<int> &A, int B)
+{
+	int i = 0, j = 0, len = 0;
+	while ((i < A.size()) && (j < A.size()))
+	{
+		if (A[j])
+		{
+			++j;
+		}
+		else
+		{
+			int temp = B;
+			while ((temp > 0) && (j < A.size()))
+			{
+				if (A[j] == 0)
+				{
+					temp--;
+				}
+				++j;
+			}
+
+			while ((j < A.size()))
+			{
+				if (A[j])
+				{
+					++j;
+				}
+				else
+				{
+					break;
+				}
+			}
+			len = max(len, j - i);
+			i++;
+			j = i;
+		}
+	}
+
+	return len;
+}
+
+// O(N)
+int solveOnes2(vector<int> &A, int B)
+{
+	int i = 0, j = 0, len = 0, countZero = 0;
+	while ((i < A.size()) && (j < A.size()))
+	{
+		if (A[j] == 0)
+		{
+			++countZero;
+			while (countZero > B)
+			{
+				if (A[i] == 0)
+				{
+					--countZero;
+				}
+				++i;
+			}
+		}
+		len = max(len, j - i + 1);
+		++j;
+	}
+	return len;
+}
+
+// Remove Duplicates from Sorted Array II
+int removeDuplicates2(vector<int> &A)
+{
+	int i = 0, j = A[0], countDup = 1;
+
+	for (int k = 2; k < A.size(); k++)
+	{
+		if ((i == 0) || (i == 1) || (A[k] != A[i - 2]))
+		{
+			A[i++] = A[k];
+		}
+	}
+
+	return i;
+}
+
 int main()
 {
-	vector<int> nums = {4, 9, 5}, nums2 = {9, 4, 9, 8, 4};
-	// cout << countPairsWithDiffK(nums, 5, 2);
-	for (auto &&i : intersection(nums, nums2))
+	vector<int> nums = {0, 0, 0, 0, 0, 1, 1, 1, 1, 1}, nums2 = {1, 1, 1, 2, 2, 2};
+	cout << removeDuplicates2(nums2) << endl;
+
+	for (auto &&i : nums2)
 	{
 		cout << i << " ";
 	}
