@@ -350,12 +350,91 @@ int compareVersion(string version1, string version2)
     return 0;
 }
 
+// Zigzag Conversion
+// O(N)
+string convert(string s, int numRows)
+{
+    if (numRows == 1)
+    {
+        return s;
+    }
+    string ans = "";
+    int val = (numRows - 1) * 2;
+
+    for (size_t row = 0; row < numRows; row++)
+    {
+        for (size_t i = row; i < s.length(); i += val)
+        {
+            ans += s[i];
+            if ((row > 0) && (row < numRows - 1) && ((i + val - (2 * row)) < s.length()))
+            {
+                ans += s[i + val - (2 * row)];
+            }
+        }
+    }
+
+    return ans;
+}
+
+vector<string> prettyJSON(string s)
+{
+    vector<string> ans;
+    string tab = "";
+    bool characterFlag = 0;
+
+    for (size_t i = 0; i < s.length(); i++)
+    {
+        if ((s[i] == '{') || (s[i] == '[') || (s[i] == ']') || (s[i] == '}'))
+        {
+            if (s[i] == '{' || s[i] == '[')
+            {
+                ans.push_back(tab + string(1, s[i]));
+                tab += "\t";
+            }
+            else
+            {
+                string end = string(1, s[i]);
+                if ((i + 1 < s.length()) && (s[i + 1] == ','))
+                {
+                    end += s[i + 1];
+                    i++;
+                }
+                tab.pop_back();
+                ans.push_back(tab + end);
+            }
+            continue;
+        }
+        string temp = "";
+
+        while ((i < s.length()) && (s[i] != ',') && (s[i] != '{') && (s[i] != '[') && (s[i] != ']') && (s[i] != '}'))
+        {
+            temp += s[i++];
+        }
+        if (s[i] == ',')
+        {
+            temp += string(1, s[i]);
+            i++;
+        }
+        --i;
+        ans.push_back(tab + temp);
+    }
+
+    return ans;
+}
+
 int main()
 {
-    vector<string> strs = {"flower", "flow", "flight"};
+    vector<string> strs = {"flower\n", "\tflow\n", "\t\tflight\n"};
+    string s = "{A:\"B\",C:{D:\"E\",F:{G:\"H\",I:\"J\"}}}";
+
+    for (auto &&i : prettyJSON(s))
+    {
+        cout << i << "\n";
+    }
+
     // cout << reverseWords("lets go to 'new york'") << endl;
     // cout << myAtoi(" -9.87") << endl;
     // cout << longestCommonPrefix2(strs) << endl;
-    cout << longestPalindrome("CCC") << endl;
+    // cout << longestPalindrome("CCC") << endl;
     return 0;
 }
