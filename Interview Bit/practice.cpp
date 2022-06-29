@@ -2105,6 +2105,33 @@ vector<vector<int>> prettyPrint(int A)
     return ans;
 }
 
+// Rain Water Trapped
+int trap(const vector<int> &A)
+{
+    vector<int> postFix(A.size(), 0);
+    int ans = 0;
+    int temp = A[A.size() - 1];
+
+    for (int i = A.size() - 1; i >= 0; i--)
+    {
+        temp = max(A[i], temp);
+        postFix[i] = temp;
+    }
+
+    temp = A[0];
+    for (size_t i = 1; i < A.size() - 1; i++)
+    {
+        int tempDiff = min(temp, postFix[i]) - A[i];
+        if (tempDiff > 0)
+        {
+            ans += tempDiff;
+        }
+        temp = max(temp, A[i]);
+    }
+
+    return ans;
+}
+
 int main()
 {
     vector<int> A = {1, 3, 2, 4, 5};

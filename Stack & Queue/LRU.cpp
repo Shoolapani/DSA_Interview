@@ -49,9 +49,9 @@ public:
     {
         if (uMap.find(key) != uMap.end())
         {
-            Node *existingnode = uMap[key];
+            Node *existingNode = uMap[key];
             uMap.erase(key);
-            deleteNode(existingnode);
+            deleteNode(existingNode);
         }
         if (uMap.size() == cap)
         {

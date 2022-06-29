@@ -105,6 +105,7 @@ private:
 };
 
 // Valid Parentheses
+// Generate all Parentheses
 bool isValid(string s)
 {
     stack<char> s1;
@@ -260,9 +261,537 @@ private:
     long long int minVal;
 };
 
+// 71. Simplify Path
+//  Not Working
+// 😢😒🤦‍♂️ Loop lagao
+// string simplifyPath1(string path)
+// {
+//     string ans = "/";
+
+//     for (size_t i = 0; i < path.length(); i++)
+//     {
+//         if ((i == path.length() - 1) && (path[i] == '/'))
+//         {
+//             continue;
+//         }
+//         else if ((!ans.empty()) && (ans[ans.length() - 1] == '/') && (path[i] == '/'))
+//         {
+//             continue;
+//         }
+//         else if ((i + 1 < path.length()) && (ans.length() == 1) && (ans[ans.length() - 1] == '/') && (path[i] == '.') && (path[i + 1] == '.'))
+//         {
+//             if ((i + 2 < path.length()) && (path[i + 2] == '.'))
+//             {
+//                 i += 2;
+//                 ans += "...";
+//             }
+//             else if ((i + 2 < path.length()) && (path[i + 2] != '/'))
+//             {
+//                 while ((i < path.length()) && (path[i] != '/'))
+//                 {
+//                     ans += path[i];
+//                     i++;
+//                 }
+//                 --i;
+//             }
+//             else if ((i > 0) && (path[i - 1]) != '/')
+//             {
+//                 ans += "..";
+//                 continue;
+//             }
+//             else
+//                 continue;
+//         }
+//         else if ((i + 1 < path.length()) && (path[i] == '.') && (path[i + 1] == '.'))
+//         {
+//             if ((i + 2 < path.length()) && (path[i + 2] == '.'))
+//             {
+//                 i += 2;
+//                 ans += "...";
+//                 continue;
+//             }
+//             else if ((i + 2 < path.length()) && (path[i + 2] != '/'))
+//             {
+//                 while ((i < path.length()) && (path[i] != '/'))
+//                 {
+//                     ans += path[i++];
+//                 }
+//                 --i;
+//             }
+//             else if ((i > 0) && (path[i - 1]) != '/')
+//             {
+//                 ans += "..";
+//                 continue;
+//             }
+//             else
+//             {
+//                 ans.pop_back();
+//                 while (ans[ans.length() - 1] != '/')
+//                 {
+//                     ans.pop_back();
+//                 }
+//                 ans.pop_back();
+//             }
+//         }
+//         else if (path[i] == '.')
+//         {
+//             if ((i + 1 < path.length()) && (path[i + 1] != '/'))
+//             {
+//                 while ((i < path.length()) && (path[i] != '/'))
+//                 {
+//                     ans += path[i++];
+//                 }
+//                 --i;
+//             }
+//             continue;
+//         }
+//         else
+//         {
+//             ans += path[i];
+//         }
+//     }
+//     if ((ans.length() > 1) and (ans[ans.length() - 1] == '/'))
+//     {
+//         ans.pop_back();
+//     }
+//     return ans;
+// }
+
+string simplifyPath(string path)
+{
+    stringstream strStream(path);
+    string ans = "", temp = "";
+    vector<string> res;
+
+    while (getline(strStream, temp, '/'))
+    {
+        if ((temp == "") or (temp == "."))
+        {
+            continue;
+        }
+        else if ((temp == "..") and (!res.empty()))
+        {
+            res.pop_back();
+        }
+        else if (temp != "..")
+        {
+            res.push_back(temp);
+        }
+    }
+
+    if (res.size() == 0)
+    {
+        return "/";
+    }
+
+    for (auto &&it : res)
+    {
+        ans += "/" + it;
+    }
+
+    return ans;
+}
+
+// 239. Sliding Window Maximum
+vector<int> maxSlidingWindow(vector<int> &nums, int k)
+{
+    deque<int> dq;
+    vector<int> ans;
+
+    for (size_t i = 0; i < nums.size(); i++)
+    {
+        if ((!dq.empty()) and (dq.front() == i - k))
+        {
+            dq.pop_front();
+        }
+
+        while ((!dq.empty()) and (nums[dq.back()] < nums[i]))
+        {
+            dq.pop_back();
+        }
+        dq.push_back(i);
+
+        if (i >= (k - 1))
+        {
+            ans.push_back(nums[dq.front()]);
+        }
+    }
+
+    return ans;
+}
+
+class Node
+{
+public:
+    int key;
+    int value;
+    Node *next;
+    Node *prev;
+
+    Node(int _key = 0, int _value = 0)
+        : key{_key}, value{_value}
+    {
+        next = nullptr;
+        prev = nullptr;
+    }
+};
+
+class LRUCache
+{
+public:
+    LRUCache(int capacity)
+    {
+        size = capacity;
+        head->next = tail;
+        tail->prev = head;
+    }
+
+    int get(int key)
+    {
+        if (uMap.find(key) == uMap.end())
+        {
+            return -1;
+        }
+        int res = uMap[key]->value;
+        Node *node = uMap[key];
+        uMap.erase(key);
+        deleteNode(node);
+        addNode(node);
+        uMap[node->key] = head->next;
+        return res;
+    }
+
+    void put(int key, int value)
+    {
+        if ((uMap.find(key) != uMap.end()))
+        {
+            Node *existingNode = uMap[key];
+            uMap.erase(key);
+            deleteNode(existingNode);
+        }
+        if (uMap.size() == size)
+        {
+            uMap.erase(tail->prev->key);
+            deleteNode(tail->prev);
+        }
+
+        addNode(new Node(key, value));
+        uMap[key] = head->next;
+    }
+
+    ~LRUCache()
+    {
+        delete head;
+        delete tail;
+    }
+
+private:
+    Node *head = new Node(-1, -1);
+    Node *tail = new Node(-1, -1);
+    unordered_map<int, Node *> uMap;
+    int size;
+
+    void addNode(Node *newNode);
+    void deleteNode(Node *deleteNode);
+};
+
+void LRUCache::addNode(Node *newNode)
+{
+    Node *temp = head->next;
+    newNode->next = temp;
+    newNode->prev = head;
+    head->next = newNode;
+    temp->prev = newNode;
+}
+
+void LRUCache::deleteNode(Node *deleteNode)
+{
+    Node *delPrevNode = deleteNode->prev;
+    Node *delNextNode = deleteNode->next;
+    delPrevNode->next = delNextNode;
+    delNextNode->prev = delPrevNode;
+}
+
+// First non-repeating character in a stream of characters
+// O(N^2)
+string solveNonRepeating(string s)
+{
+    unordered_map<char, int> uMap;
+    string ans = "";
+    set<int> indexFinder;
+    bool flag = 1;
+
+    for (auto i = 0; i < s.length(); i++)
+    {
+        uMap[s[i]]++;
+        flag = 1;
+        for (size_t j = 0; j <= i; j++)
+        {
+            if (uMap[s[j]] == 1)
+            {
+                ans += s[j];
+                flag = 0;
+                break;
+            }
+        }
+        if (flag)
+        {
+            ans += "#";
+        }
+    }
+
+    return ans;
+}
+
+string solveNonRepeating1(string s)
+{
+    unordered_map<char, int> uMap;
+    string ans = "";
+    queue<char> q;
+
+    for (auto i = 0; i < s.length(); i++)
+    {
+        uMap[s[i]]++;
+        q.push(s[i]);
+        while ((!q.empty()) && (uMap[q.front()] > 1))
+        {
+            q.pop();
+        }
+
+        if (q.empty())
+        {
+            ans += "#";
+        }
+        else
+        {
+            ans += q.front();
+        }
+    }
+
+    return ans;
+}
+
+string solveNonRepeating2(string s)
+{
+    unordered_map<char, int> uMap;
+    string ans = "";
+    queue<char> q;
+
+    for (auto i = 0; i < s.length(); i++)
+    {
+        uMap[s[i]]++;
+        q.push(s[i]);
+        while ((!q.empty()) && (uMap[q.front()] > 1))
+        {
+            q.pop();
+        }
+
+        if (q.empty())
+        {
+            ans += "#";
+        }
+        else
+        {
+            ans += q.front();
+        }
+    }
+
+    return ans;
+}
+
+// Redundant Braces
+int braces(string A)
+{
+    stack<char> st;
+
+    for (size_t i = 0; i < A.length(); i++)
+    {
+        if (A[i] != ')')
+        {
+            if ((!isalpha(A[i])))
+            {
+                st.push(A[i]);
+            }
+        }
+        else if ((A[i] == ')'))
+        {
+            if (st.top() == '(')
+            {
+                return 1;
+            }
+            while ((!st.empty()) and (st.top() != '('))
+            {
+                st.pop();
+            }
+            st.pop();
+        }
+    }
+
+    return 0;
+}
+
+int evalRPN(vector<string> &A)
+{
+    stack<int> st;
+    if (A.size() == 1)
+    {
+        return stoi(A[0]);
+    }
+    for (size_t i = 0; i < A.size(); i++)
+    {
+        if ((A[i] == "+") or (A[i] == "-") or (A[i] == "/") or (A[i] == "*"))
+        {
+            if ((A[i] == "-"))
+            {
+                int ans = 0;
+                ans = st.top();
+                st.pop();
+                int count = 1;
+                while ((!st.empty()) and (count--))
+                {
+                    ans = st.top() - ans;
+                    st.pop();
+                }
+                st.push(ans);
+            }
+            else if ((A[i] == "+"))
+            {
+                int ans = 0;
+                ans = st.top();
+                st.pop();
+                int count = 1;
+                while ((!st.empty()) and (count--))
+                {
+                    ans = st.top() + ans;
+                    st.pop();
+                }
+                st.push(ans);
+            }
+            else if ((A[i] == "*"))
+            {
+                int ans = 0;
+                ans = st.top();
+                st.pop();
+                int count = 1;
+                while ((!st.empty()) and (count--))
+                {
+                    ans = st.top() * ans;
+                    st.pop();
+                }
+                st.push(ans);
+            }
+            else
+            {
+                int ans = 0;
+                ans = st.top();
+                st.pop();
+                int count = 1;
+                while ((!st.empty()) and (count--))
+                {
+                    ans = st.top() / ans;
+                    st.pop();
+                }
+                st.push(ans);
+            }
+        }
+        else
+        {
+            st.push(stoi(A[i]));
+        }
+    }
+    return st.top();
+}
+
+// MAXSPPROD
+#define ll long long int
+int maxSpecialProduct(vector<int> &A)
+{
+    vector<ll> infixLarge(A.size(), 0), postFix(A.size(), 0);
+    long long int ans = 0;
+    stack<ll> st, st2;
+
+    for (ll i = 0; i < A.size(); i++)
+    {
+        while ((!st.empty()) and (A[st.top()] <= A[i]))
+        {
+            st.pop();
+        }
+        if ((!st.empty()))
+            infixLarge[i] = st.top();
+        st.push(i);
+    }
+
+    for (ll i = A.size() - 1; i >= 0; i--)
+    {
+        while ((!st2.empty()) and (A[st2.top()] <= A[i]))
+        {
+            st2.pop();
+        }
+        if ((!st2.empty()))
+            postFix[i] = st2.top();
+        st2.push(i);
+    }
+
+    const long long int div = 1000000007;
+    for (ll i = 0; i < A.size(); i++)
+    {
+        ans = max(ans, infixLarge[i] * postFix[i]);
+    }
+
+    return ans % div;
+}
+
+int maxSpecialProduct(vector<int> &A)
+{
+    int n = A.size();
+    stack<pair<int, int>> st;
+
+    long long int larr[n], rarr[n];
+
+    for (int i = 0; i < n; i++)
+    {
+        while (!st.empty() && st.top().first <= A[i])
+            st.pop();
+
+        if (st.empty())
+            larr[i] = 0;
+        else
+            larr[i] = st.top().second;
+        st.push({A[i], i});
+    }
+
+    while (!st.empty())
+        st.pop();
+
+    for (int i = n - 1; i >= 0; i--)
+    {
+        while (!st.empty() && st.top().first <= A[i])
+            st.pop();
+
+        if (st.empty())
+            rarr[i] = 0;
+        else
+            rarr[i] = st.top().second;
+        st.push({A[i], i});
+    }
+
+    long long int ans = -1;
+
+    for (int i = 0; i < n; i++)
+    {
+        ans = max(ans, larr[i] * rarr[i]);
+    }
+
+    return ans % 1000000007;
+}
+
 int main()
 {
-    string s = "(]";
-    cout << isValid(s) << endl;
+    string s = "((a+b))";
+    vector<int> v = {5, 9, 6, 8, 6, 4, 6, 9, 5, 4, 9};
+    // string path = "/../";
+    // string path = "/hello../world";
+    // cout << solveNonRepeating1(s) << endl;
+    cout << maxSpecialProduct(v) << endl;
     return 0;
 }

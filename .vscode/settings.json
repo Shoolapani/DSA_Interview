@@ -11,7 +11,10 @@
         "initializer_list": "cpp",
         "regex": "cpp",
         "utility": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "iosfwd": "cpp",
+        "cctype": "cpp",
+        "cmath": "cpp"
     },
     "cSpell.language": "en,en-US,en-GB"
 }

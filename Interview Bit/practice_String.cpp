@@ -422,6 +422,12 @@ vector<string> prettyJSON(string s)
     return ans;
 }
 
+string reverseString(string A)
+{
+    reverse(A.begin(), A.end());
+    return A;
+}
+
 int main()
 {
     vector<string> strs = {"flower\n", "\tflow\n", "\t\tflight\n"};
