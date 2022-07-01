@@ -518,7 +518,6 @@ string solveNonRepeating(string s)
 {
     unordered_map<char, int> uMap;
     string ans = "";
-    set<int> indexFinder;
     bool flag = 1;
 
     for (auto i = 0; i < s.length(); i++)
@@ -704,7 +703,7 @@ int evalRPN(vector<string> &A)
 
 // MAXSPPROD
 #define ll long long int
-int maxSpecialProduct(vector<int> &A)
+int maxSpecialProduct2(vector<int> &A)
 {
     vector<ll> infixLarge(A.size(), 0), postFix(A.size(), 0);
     long long int ans = 0;
@@ -785,13 +784,65 @@ int maxSpecialProduct(vector<int> &A)
     return ans % 1000000007;
 }
 
+// 84. Largest Rectangle in Histogram
+int largestRectangleArea(vector<int> &heights)
+{
+    int val = heights[0], noTimes = 1;
+    int ans = 0;
+    int n = heights.size();
+
+    stack<int> leftSmall, rightSmall;
+    vector<int> leftSmallerVector(n, 0), rightSmallerVector(n, n - 1);
+
+    for (size_t i = 0; i < n; i++)
+    {
+        while ((!leftSmall.empty()) and (heights[leftSmall.top()] >= heights[i]))
+        {
+            leftSmall.pop();
+        }
+        if (leftSmall.empty())
+        {
+            leftSmallerVector[i] = 0;
+        }
+        else
+        {
+            leftSmallerVector[i] = leftSmall.top() + 1;
+        }
+        leftSmall.push(i);
+    }
+
+    for (int i = n - 1; i >= 0; i--)
+    {
+        while ((!rightSmall.empty()) and (heights[rightSmall.top()] >= heights[i]))
+        {
+            rightSmall.pop();
+        }
+        if (rightSmall.empty())
+        {
+            rightSmallerVector[i] = n - 1;
+        }
+        else
+        {
+            rightSmallerVector[i] = rightSmall.top() - 1;
+        }
+        rightSmall.push(i);
+    }
+
+    for (size_t i = 0; i < n; i++)
+    {
+        ans = max(ans, ((rightSmallerVector[i] - leftSmallerVector[i] + 1) * heights[i]));
+    }
+
+    return ans;
+}
+
 int main()
 {
     string s = "((a+b))";
-    vector<int> v = {5, 9, 6, 8, 6, 4, 6, 9, 5, 4, 9};
+    vector<int> v = {2, 4};
     // string path = "/../";
     // string path = "/hello../world";
     // cout << solveNonRepeating1(s) << endl;
-    cout << maxSpecialProduct(v) << endl;
+    cout << largestRectangleArea(v) << endl;
     return 0;
 }
