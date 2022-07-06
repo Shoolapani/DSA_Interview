@@ -836,6 +836,107 @@ int largestRectangleArea(vector<int> &heights)
     return ans;
 }
 
+class MinStack
+{
+public:
+    MinStack()
+        : minEle{0}
+    {
+        while (!st.empty())
+        {
+            st.pop();
+        }
+    }
+
+    void push(int val)
+    {
+        if (st.empty())
+        {
+            minEle = val;
+            st.push(val);
+        }
+        else
+        {
+            if (val < minEle)
+            {
+                st.push((2 * (val)) - (minEle));
+                minEle = val;
+            }
+            else
+            {
+                st.push(val);
+            }
+        }
+    }
+
+    void pop()
+    {
+        if (minEle > st.top())
+        {
+            minEle = (2 * (minEle)) - (st.top());
+        }
+        st.pop();
+    }
+
+    int top()
+    {
+        if (minEle > st.top())
+        {
+            return minEle;
+        }
+        else
+        {
+            return st.top();
+        }
+    }
+
+    int getMin()
+    {
+        return minEle;
+    }
+
+private:
+    stack<int> st;
+    int minEle;
+};
+
+// Sliding Window Maximum
+//  [1, 3, -1, -3, 5, 3, 6, 7]
+//
+//   3 3 5 6
+vector<int> slidingMaximum(const vector<int> &A, int B)
+{
+    // 18001084747
+    deque<int> dq;
+    vector<int> max;
+
+    for (size_t i = 0; i < A.size(); i++)
+    {
+        if ((!dq.empty()) and (dq.size() > B))
+        {
+            dq.pop_front();
+        }
+
+        while ((!dq.empty()) and (dq.front() <= A[i]))
+        {
+            dq.pop_front();
+        }
+
+        if (i >= B - 1)
+        {
+            if (!dq.empty())
+                max.push_back(dq.front());
+            else
+            {
+                max.push_back(A[i]);
+            }
+        }
+        dq.push_back(A[i]);
+    }
+
+    return max;
+}
+
 int main()
 {
     string s = "((a+b))";

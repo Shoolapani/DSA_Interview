@@ -191,7 +191,7 @@ vector<int> prevSmaller(vector<int> &A)
 // doubt
 //  A = "abadbc"
 //      ab
-// 
+//
 string solveRepeating(string A)
 {
     string ans = "";
@@ -218,6 +218,11 @@ string solveRepeating(string A)
     }
 
     return ans;
+}
+
+// Largest Rectangle in Histogram
+int largestRectangleArea(vector<int> &A)
+{
 }
 
 int main()

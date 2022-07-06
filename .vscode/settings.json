@@ -14,7 +14,8 @@
         "valarray": "cpp",
         "iosfwd": "cpp",
         "cctype": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "functional": "cpp"
     },
     "cSpell.language": "en,en-US,en-GB"
 }
