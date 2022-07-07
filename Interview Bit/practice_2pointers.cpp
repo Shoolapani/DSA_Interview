@@ -435,12 +435,90 @@ int removeDuplicates2(vector<int> &A)
 	return i;
 }
 
+// Max Continuous Series of 1s
+vector<int> maxone(vector<int> &A, int B)
+{
+	vector<int> ans;
+	int i = 0, j = 0, len = 0, countZero = 0;
+	int st = 0, end = 0;
+	while ((i < A.size()) && (j < A.size()))
+	{
+		if (A[j] == 0)
+		{
+			++countZero;
+			while ((countZero > B) and (i < A.size()))
+			{
+				if (A[i] == 0)
+				{
+					--countZero;
+				}
+				++i;
+			}
+		}
+
+		if ((j - i + 1) > len)
+		{
+			len = j - i + 1;
+			st = i;
+			end = j;
+		}
+
+		++j;
+	}
+
+	for (int i = st; i <= end; i++)
+	{
+		ans.emplace_back(i);
+	}
+
+	return ans;
+}
+
+vector<int> maxone1(vector<int> &A, int B)
+{
+	int wL = 0, wR = 0;
+	int nZero = 0;
+	int bestWindowWidth = -1;
+	vector<int> result;
+	int start = 0, end = 0;
+
+	while (wR < A.size())
+	{
+		// expand to the right, update '0' count:
+		if (nZero <= B)
+		{
+			if (A[wR] == 0)
+				++nZero;
+			++wR;
+		}
+
+		// shrink from left, update '0' count:
+		if (nZero > B)
+		{
+			if (A[wL] == 0)
+				--nZero;
+			++wL;
+		}
+
+		// update best window:
+		if (wR - wL + 1 > bestWindowWidth)
+		{
+			bestWindowWidth = wR - wL + 1;
+			start = wL;
+			end = wR;
+		}
+	}
+	for (auto i = start; i < end; ++i)
+		result.emplace_back(i);
+	return result;
+}
+
 int main()
 {
-	vector<int> nums = {0, 0, 0, 0, 0, 1, 1, 1, 1, 1}, nums2 = {1, 1, 1, 2, 2, 2};
-	cout << removeDuplicates2(nums2) << endl;
+	vector<int> nums = {1, 1, 0}, nums2 = {1, 1, 1, 2, 2, 2};
+	// cout << removeDuplicates2(nums2) << endl;
 
-	for (auto &&i : nums2)
+	for (auto &&i : nums)
 	{
 		cout << i << " ";
 	}

@@ -958,6 +958,38 @@ ListNode *reverseBetween(ListNode *A, int B, int C)
     return A;
 }
 
+// SUBTRACT
+// Given linked list 1 -> 2 -> 3 -> 4 -> 5,
+// You should return 4 -> 2 -> 3 -> 4 -> 5
+ListNode *subtract(ListNode *head)
+{
+    ListNode *slow = head, *fast = head, *temp = head;
+    vector<int> ds;
+
+    while ((fast->next) and (fast->next->next))
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    fast = slow;
+
+    while (slow)
+    {
+        ds.push_back(slow->val);
+        slow = slow->next;
+    }
+
+    int i = ds.size() - 1;
+
+    while (temp != fast)
+    {
+        temp->val = ds[i--] - temp->val;
+        temp = temp->next;
+    }
+
+    return head;
+}
+
 int main()
 {
 

@@ -163,6 +163,31 @@ vector<int> nextGreaterElement(vector<int> &nums1, vector<int> &nums2)
     return ans;
 }
 
+// NEXT GREATER
+// Your submission failed for the following input
+// A : [ 34, 35, 27, 42, 5, 28, 39, 20, 28 ]
+
+// The expected return value:
+// 35 42 42 -1 28 39 -1 28 -1
+// Your function returned the following:
+// 27 27 5 5 -1 20 20 -1 -1
+vector<int> nextGreater(vector<int> &nums)
+{
+    vector<int> ans(nums.size());
+    stack<int> s;
+    for (int i = nums.size() - 1; i >= 0; i--)
+    {
+        while ((!s.empty()) && (nums[i] >= s.top()))
+        {
+            s.pop();
+        }
+
+        ans[i] = (s.empty() ? (-1) : (s.top()));
+        s.push(nums[i]);
+    }
+    return ans;
+}
+
 class MinStack
 {
 public:

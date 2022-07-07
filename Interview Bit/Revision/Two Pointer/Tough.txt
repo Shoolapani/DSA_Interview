@@ -1,3 +1,6 @@
 1. Pair With Given Difference
 2. threeSumClosest
 3. Maximum Ones After Modification
+4. Counting Subarrays!
+5. Max Continuous Series of 1s
+

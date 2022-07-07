@@ -2,7 +2,8 @@
     "cSpell.words": [
         "DCCC",
         "LXXX",
-        "Subarray"
+        "Subarray",
+        "Subarrays"
     ],
     "files.associations": {
         "array": "cpp",
