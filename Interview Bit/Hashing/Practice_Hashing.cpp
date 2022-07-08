@@ -60,7 +60,70 @@ int colorful2(int A)
     return 1;
 }
 
+// Check Palindrome!
+int solve(string A)
+{
+    unordered_map<char, int> uMap;
 
+    for (size_t i = 0; i < A.length(); i++)
+    {
+        uMap[A[i]]++;
+    }
+    bool flag = false;
+
+    if (A.length() & 1)
+    {
+        flag = true;
+    }
+
+    for (auto it = uMap.begin(); it != uMap.end(); it++)
+    {
+        if (it->second & 1)
+        {
+            if (flag)
+            {
+                flag = 0;
+                continue;
+            }
+            return 0;
+        }
+    }
+    return 1;
+}
+
+// Anagrams
+vector<vector<int>> anagrams(const vector<string> &A)
+{
+    vector<vector<int>> ans;
+    vector<int> noPair;
+    unordered_map<string, int> uMap;
+
+    for (size_t i = 0; i < A.size(); i++)
+    {
+        string temp = A[i];
+        sort(temp.begin(), temp.end());
+
+        if (uMap.find(temp) != uMap.end())
+        {
+            vector<int> ds;
+            ds.emplace_back(uMap[temp]);
+            ds.emplace_back(i);
+            ans.push_back(ds);
+        }
+        else
+        {
+            uMap[temp] = i;
+        }
+    }
+
+    for (auto it = uMap.begin(); it != uMap.end(); it++)
+    {
+        if (it->second & 1)
+        {
+        }
+    }
+    return ans;
+}
 
 int main()
 {
