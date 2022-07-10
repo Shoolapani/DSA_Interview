@@ -1,0 +1,5 @@
+1. Anagrams
+2. Pairs With Given Xor
+3. Subarray with B odd numbers
+4. Longest Subarray Length
+
