@@ -175,12 +175,7 @@ int solvePairs2(vector<int> &A, int B)
 	return ans;
 }
 
-// Subarray with B odd numbers
-int solve(vector<int> &A, int B)
-{
-}
-
-int solve(vector<int> &A, int B)
+int solve1(vector<int> &A, int B)
 {
 	int n = A.size();
 	int count = 0;
@@ -229,41 +224,27 @@ int solve(vector<int> &A)
 }
 
 // Longest Subarray Length
-//  A = [0, 1, 1, 0, 0, 1]
-//
-int solve(vector<int> &A)
+int solveLongest(vector<int> &A)
 {
 	int ans = 1;
-	int i = 0, j = 0;
-	int countZero = 0, countOne = 0;
+	int sum = 0, j = 0;
+	unordered_map<int, int> uMap;
 
-	while ((i < A.size()) and (j < A.size()))
+	while ((j < A.size()))
 	{
-		if (A[j] == 0)
+		sum += ((A[j] == 0) ? (-1) : (1));
+		if (sum == 1)
 		{
-			++countZero;
+			ans = j + 1;
 		}
-		else
+		else if (uMap.find(sum) == uMap.end())
 		{
-			++countOne;
-		}
-
-		while ((countOne > countZero + 1) and (i < A.size()))
-		{
-			if (A[i] == 0)
-			{
-				--countZero;
-			}
-			else
-			{
-				--countOne;
-			}
-			++i;
+			uMap[sum] = j;
 		}
 
-		if (countOne == countZero + 1)
+		if (uMap.find(sum - 1) != uMap.end())
 		{
-			ans = max(ans, j - i + 1);
+			ans = max(ans, j - uMap[sum - 1]);
 		}
 		++j;
 	}
@@ -271,26 +252,211 @@ int solve(vector<int> &A)
 	return ans;
 }
 
-int solve(vector<int> &A)
+// Largest subarray with 0 sum
+// A[] = {15,-2,2,-8,1,7,10,23}
+//  15-2+2-8
+//
+int maxLen(vector<int> &A, int n)
 {
-	map<int, int> m;
-	int sum = 0, maxlen = 0;
+	unordered_map<int, int> uMap;
+	int len = 0;
+	long long int sum = 0;
+
 	for (int i = 0; i < A.size(); i++)
 	{
-		sum += (A[i] == 0) ? -1 : 1;
-		if (sum == 1)
-			maxlen = max(maxlen, i + 1);
-		else if (m.find(sum) == m.end())
-			m[sum] = i;
-		if (m.find(sum - 1) != m.end())
+		sum += A[i];
+		if (sum == 0)
 		{
-			maxlen = max(maxlen, i - m[sum - 1]);
+			len = i + 1;
+		}
+		else if (uMap.find(sum) != uMap.end())
+		{
+			len = max(len, i - uMap[sum]);
+		}
+		else if (uMap.find(sum) == uMap.end())
+		{
+			uMap[sum] = i;
 		}
 	}
-	return maxlen;
+
+	return len;
+}
+
+vector<int> lszero(vector<int> &A)
+{
+	unordered_map<int, int> uMap;
+	int len = 0, st = 0, end = 0;
+	vector<int> ans;
+	long long int sum = 0;
+	bool flag = false;
+
+	for (int i = 0; i < A.size(); i++)
+	{
+		sum += A[i];
+		if (sum == 0)
+		{
+			len = i + 1;
+			end = i;
+			flag = true;
+		}
+		else if (uMap.find(sum) != uMap.end())
+		{
+			if (len < (i - uMap[sum]))
+			{
+				len = i - uMap[sum];
+				end = i;
+				st = uMap[sum];
+				flag = false;
+			}
+		}
+		else if (uMap.find(sum) == uMap.end())
+		{
+			uMap[sum] = i;
+		}
+	}
+
+	int start = st + 1;
+	if (flag)
+	{
+		start = 0;
+	}
+
+	for (size_t i = start; i <= end; i++)
+	{
+		ans.push_back(A[i]);
+	}
+
+	return ans;
+}
+
+// [".",".","4",".",".",".","6","3","."],
+// [".",".",".",".",".",".",".",".","."],
+// ["5",".",".",".",".",".",".","9","."],
+// [".",".",".","5","6",".",".",".","."],
+// ["4",".","3",".",".",".",".",".","1"],
+// [".",".",".","7",".",".",".",".","."],
+// [".",".",".","5",".",".",".",".","."]
+// [".",".",".",".",".",".",".",".","."],
+// [".",".",".",".",".",".",".",".","."]
+
+// Failed
+// bool isValidSudoku(vector<vector<char>> &board)
+// {
+// 	set<int> horizontal, vertical;
+
+// 	for (size_t i = 0; i < board.size(); i++)
+// 	{
+// 		if ((board[i][0] != '.') and (!vertical.empty()) and (vertical.find(board[i][0]) != vertical.end()))
+// 		{
+// 			return 0;
+// 		}
+// 		else if (board[i][0] != '.')
+// 		{
+// 			vertical.insert(board[i][0]);
+// 			for (size_t j = 0; j < 9; j++)
+// 			{
+// 				if ((board[i][j] != '.') and (!horizontal.empty()) and (horizontal.find(board[i][j]) != horizontal.end()))
+// 				{
+// 					return 0;
+// 				}
+// 				else if ((board[i][j] != '.'))
+// 				{
+// 					horizontal.insert(board[i][j]);
+// 				}
+// 			}
+// 			horizontal.clear();
+// 		}
+// 	}
+
+// 	horizontal.clear();
+// 	vertical.clear();
+
+// 	for (size_t i = 0; i < board.size(); i++)
+// 	{
+// 		for (size_t j = 0; j < 9; j++)
+// 		{
+// 			if ((board[j][i] != '.') and (!horizontal.empty()) and (horizontal.find(board[j][i]) != horizontal.end()))
+// 			{
+// 				return 0;
+// 			}
+// 			else if ((board[j][i] != '.'))
+// 			{
+// 				horizontal.insert(board[j][i]);
+// 			}
+// 		}
+// 		horizontal.clear();
+// 	}
+
+// 	// 3 by 3
+// 	unordered_map<int, pair<int, int>> uMap;
+// 	for (size_t i = 0; i < board.size(); i++)
+//
+// 		for (size_t j = 0; j < 9; j++)
+// 		{
+// 			if ((board[i][j] != '.') and (uMap.find(board[i][j]) != uMap.end()))
+// 			{
+// 				if ((uMap[board[i][j]].first == (i / 3)) and (uMap[board[i][j]].second == (j / 3)))
+// 				{
+// 					return 0;
+// 				}
+// 			}
+// 			else if ((board[i][j] != '.'))
+// 			{
+// 				uMap.insert({board[i][j], {i / 3, j / 3}});
+// 			}
+// 		}
+// 	}
+
+// 	return 1;
+// }
+
+// O(N*2) O(N)
+bool isValidSudoku(vector<vector<char>> &board)
+{
+	set<string> seen;
+
+	for (size_t i = 0; i < board.size(); i++)
+	{
+		for (size_t j = 0; j < 9; j++)
+		{
+			if (board[i][j] != '.')
+			{
+				string row = "R" + string(board[i][j], 1) + to_string(i);
+				string col = "C" + string(board[i][j], 1) + to_string(j);
+				string box = "B" + string(board[i][j], 1) + to_string(((i / 3) * 3)) + to_string((j / 3));
+
+				if ((seen.find(row) != seen.end()) or (seen.find(col) != seen.end()) or (seen.find(box) != seen.end()))
+				{
+					return false;
+				}
+				else
+				{
+					seen.insert(row);
+					seen.insert(col);
+					seen.insert(box);
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
+// Window String
+string minWindow(string A, string B)
+{
+	set<char> seen;
+	return "";
 }
 
 int main()
 {
+	vector<int> A = {1, 2, -3, 3};
+	// cout << solveBitonic2(A, 2) << endl;
+	// cout << floorSqrt(930675566) << endl;
+	for (auto &&i : lszero(A))
+	{
+		cout << i << ",";
+	}
 	return 0;
 }

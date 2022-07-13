@@ -292,6 +292,25 @@ bool findPair(vector<int> &A, int B)
     return 0;
 }
 
+int solve(int A)
+{
+    int count = 0;
+
+    for (size_t i = 0; i < 32; i++)
+    {
+        if (A & (1 << i))
+        {
+            break;
+        }
+        else
+        {
+            ++count;
+        }
+    }
+
+    return count;
+}
+
 int main()
 {
     // cout << hammingWeight2(15) << endl;
