@@ -413,7 +413,7 @@ vector<int> lszero(vector<int> &A)
 // O(N*2) O(N)
 bool isValidSudoku(vector<vector<char>> &board)
 {
-	set<string> seen;
+	unordered_set<string> seen;
 
 	for (size_t i = 0; i < board.size(); i++)
 	{
@@ -421,10 +421,16 @@ bool isValidSudoku(vector<vector<char>> &board)
 		{
 			if (board[i][j] != '.')
 			{
+				// For char if it is in the row so I will add R + char + row_Number
 				string row = "R" + string(board[i][j], 1) + to_string(i);
+
+				// For a char  it is in the column so I will add C + char + column_Number
 				string col = "C" + string(board[i][j], 1) + to_string(j);
+
+				// For char if it is in the 3 * 3 box so I will add R + char+ box_Number
 				string box = "B" + string(board[i][j], 1) + to_string(((i / 3) * 3)) + to_string((j / 3));
 
+				// if row or col or box string is found then it is not a valid Sudoku
 				if ((seen.find(row) != seen.end()) or (seen.find(col) != seen.end()) or (seen.find(box) != seen.end()))
 				{
 					return false;
@@ -445,18 +451,84 @@ bool isValidSudoku(vector<vector<char>> &board)
 // Window String
 string minWindow(string A, string B)
 {
-	set<char> seen;
-	return "";
+	if (A.length() < B.length())
+	{
+		return "";
+	}
+
+	unordered_map<int, int> uMap;
+	int len = INT_MAX, ptr1 = 0, ptr2 = 0, startInd = 0, count = B.length();
+
+	for (auto &&i : B)
+	{
+		uMap[i]++;
+	}
+
+	while (ptr2 < A.length())
+	{
+		if (uMap[A[ptr2++]]-- > 0)
+		{
+			--count;
+		}
+
+		while ((count == 0) and (ptr1 < A.length()))
+		{
+			if (ptr2 - ptr1 < len)
+			{
+				len = ptr2 - ptr1, startInd = ptr1;
+			}
+
+			if (uMap[A[ptr1++]]++ == 0)
+			{
+				++count;
+			}
+		}
+	}
+
+	return len == INT_MAX ? "" : A.substr(startInd, len);
+}
+
+// Longest Substring Without Repeating Characters
+// "dvdf"
+int lengthOfLongestSubstring(string s)
+{
+	if (s.empty())
+	{
+		return 0;
+	}
+
+	int ptr1 = 0, len = 1, ptr2 = 0;
+	unordered_set<char> seen;
+
+	while ((ptr1 < s.length()) and (ptr2 < s.length()))
+	{
+		if (seen.find(s[ptr2]) == seen.end())
+		{
+			seen.insert(s[ptr2++]);
+		}
+		else
+		{
+			while ((seen.find(s[ptr2]) != seen.end()) and (ptr1 < s.length()))
+			{
+				seen.erase(s[ptr1++]);
+			}
+		}
+		len = max(len, ptr2 - ptr1);
+	}
+
+	return len;
 }
 
 int main()
 {
 	vector<int> A = {1, 2, -3, 3};
-	// cout << solveBitonic2(A, 2) << endl;
+	// cout << minWindow("ADOBECODEBANC", "ABC") << endl
+	cout << lengthOfLongestSubstring("dvdf") << endl;
 	// cout << floorSqrt(930675566) << endl;
-	for (auto &&i : lszero(A))
-	{
-		cout << i << ",";
-	}
+	// for (auto &&i : lszero(A))
+	// {
+	// 	cout << i << ",";
+	// }
+
 	return 0;
 }
