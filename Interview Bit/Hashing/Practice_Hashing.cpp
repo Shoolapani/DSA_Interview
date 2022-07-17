@@ -489,7 +489,6 @@ string minWindow(string A, string B)
 }
 
 // Longest Substring Without Repeating Characters
-// "dvdf"
 int lengthOfLongestSubstring(string s)
 {
 	if (s.empty())
@@ -519,11 +518,65 @@ int lengthOfLongestSubstring(string s)
 	return len;
 }
 
+// Fraction
+// O(N)
+string fractionToDecimal(int numerator, int denominator)
+{
+	string result = "";
+	if (numerator == 0)
+	{
+		return "0";
+	}
+
+	if (denominator == 0)
+	{
+		return "";
+	}
+
+	if ((numerator < 0) ^ (denominator < 0))
+	{
+		result += "-";
+	}
+
+	long num = abs(numerator), den = abs(denominator);
+	long res = num / den;
+	result += to_string(res);
+
+	long rem = (num % den) * 10;
+
+	if (rem == 0)
+	{
+		return result;
+	}
+
+	unordered_map<long, int> uMap;
+	result += ".";
+
+	while (rem != 0)
+	{
+		if (uMap.find(rem) != uMap.end())
+		{
+			int beg = uMap[rem];
+			string part1 = result.substr(0, beg);
+			string part2 = result.substr(beg, result.length() - beg);
+			result = part1 + "(" + part2 + ")";
+			return result;
+		}
+		uMap[rem] = result.length();
+		res = rem / den;
+		result += to_string(res);
+		rem = (rem % den) * 10;
+	}
+
+	return result;
+}
+
+
 int main()
 {
 	vector<int> A = {1, 2, -3, 3};
 	// cout << minWindow("ADOBECODEBANC", "ABC") << endl
-	cout << lengthOfLongestSubstring("dvdf") << endl;
+	cout << fractionToDecimal(2, 3) << endl;
 	// cout << floorSqrt(930675566) << endl;
 	// for (auto &&i : lszero(A))
 	// {

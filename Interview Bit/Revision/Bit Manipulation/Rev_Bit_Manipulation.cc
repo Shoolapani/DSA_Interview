@@ -35,6 +35,52 @@ unsigned int reverse(unsigned int A)
     return ans;
 }
 
+// Single Number II
+int singleNumber(const vector<int> &A)
+{
+    int ones = 0, twoS = 0;
+
+    for (auto &&it : A)
+    {
+        ones = (ones ^ it) & (~twoS);
+        twoS = (twoS ^ it) & (~ones);
+    }
+
+    return ones;
+}
+
+// Min XOR value
+int findMinXor(vector<int> &A)
+{
+    int ans = INT_MAX;
+
+    sort(A.begin(), A.end());
+    int val = 0;
+
+    for (size_t i = 0; i < A.size() - 1; i++)
+    {
+        val = A[i] ^ A[i + 1];
+        ans = min(ans, val);
+    }
+    return ans;
+}
+
+// XOR-ing the Subarrays!
+int solve(vector<int> &A)
+{
+    int freq = 0, ans = 0;
+
+    for (size_t i = 0; i < A.size(); i++)
+    {
+        freq = (i + 1) * (A.size() - i);
+        if (freq & 1)
+        {
+            ans ^= A[i];
+        }
+    }
+
+    return ans;
+}
 
 int main()
 {

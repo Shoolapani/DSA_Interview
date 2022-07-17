@@ -1,1 +1,4 @@
 1. Divide Integers
+2. Single Number II
+3. XOR-ing the Subarrays!
+4. Min XOR value
