@@ -15,3 +15,5 @@
 - Two pointers
 - Linked List
 - Stack & Queue
+- Hashing
+- Backtracking & Recursion

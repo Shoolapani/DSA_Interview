@@ -4,3 +4,4 @@
 4. Longest Subarray Length
 5. valid Sudoku
 6. Window String
+7. Equal

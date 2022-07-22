@@ -6,6 +6,13 @@
 using namespace std::chrono;
 using namespace std;
 
+struct RandomListNode
+{
+	int label;
+	RandomListNode *next, *random;
+	RandomListNode(int x) : label(x), next(NULL), random(NULL) {}
+};
+
 // Colorful Number
 int colorful(int A)
 {
@@ -571,6 +578,100 @@ string fractionToDecimal(int numerator, int denominator)
 	return result;
 }
 
+// Equal
+vector<int> equal(vector<int> &A)
+{
+	int n = A.size();
+
+	for (int i = 0; i < n - 3; i++)
+	{
+		for (int j = i + 1; j < n - 1; j++)
+		{
+			unordered_map<int, int> uMap;
+			vector<int> v;
+			for (int k = i + 1; k < n; k++)
+			{
+				if (j == k)
+				{
+					continue;
+				}
+
+				int search = A[i] + A[j] - A[k];
+
+				if (uMap.find(search) != uMap.end())
+				{
+					if (v.empty() || uMap[search] < v[0])
+					{
+						v = {uMap[search], k};
+					}
+				}
+
+				if (uMap.find(A[k]) == uMap.end())
+				{
+					uMap[A[k]] = k;
+				}
+			}
+
+			if (!v.empty())
+			{
+				return {i, j, v[0], v[1]};
+			}
+		}
+	}
+
+	return {};
+}
+
+// Copy List
+// O(N) O(N)
+RandomListNode *copyRandomList(RandomListNode *head)
+{
+	unordered_map<RandomListNode *, RandomListNode *> uMap;
+	RandomListNode *temp = head;
+
+	while (temp != nullptr)
+	{
+		uMap[temp] = new RandomListNode(temp->label);
+		temp = temp->next;
+	}
+
+	temp = head;
+	while (temp != nullptr)
+	{
+		uMap[temp]->next = uMap[temp->next];
+		temp = temp->next;
+	}
+
+	temp = head;
+	while (temp != nullptr)
+	{
+		uMap[temp]->random = uMap[temp->random];
+		temp = temp->next;
+	}
+
+	return uMap[head];
+}
+
+// Diffk II
+// A : [1 5 3]		2
+//
+int diffPossible(const vector<int> &A, int B)
+{
+	unordered_set<int> seen;
+
+	for (auto &&it : A)
+	{
+		if ((seen.find(it - B) != seen.end()) || ((seen.find(it + B) != seen.end())))
+		{
+			return 1;
+		}
+		else
+		{
+			seen.insert(it);
+		}
+	}
+	return 0;
+}
 
 int main()
 {
